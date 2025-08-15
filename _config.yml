@@ -1,0 +1,39 @@
+title: Nullblock Documentation
+description: Comprehensive documentation for Nullblock - Advanced Web3 Trading & Agentic Systems
+baseurl: "/docs"
+url: "https://aetherbytes.github.io"
+
+# Build settings
+markdown: kramdown
+highlighter: rouge
+permalink: pretty
+
+# Theme settings
+theme: jekyll-theme-cayman
+
+# Exclude from processing
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - node_modules
+  - vendor/bundle/
+  - vendor/cache/
+  - vendor/gems/
+  - vendor/ruby/
+
+# Navigation
+nav:
+  - title: Home
+    url: /
+  - title: Getting Started
+    url: /getting-started/
+  - title: API Reference
+    url: /api/
+  - title: Architecture
+    url: /architecture/
+  - title: Agents
+    url: /agents/
+  - title: Trading
+    url: /trading/
+  - title: Development
+    url: /development/

@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nullblock Documentation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            color: white;
+        }
+        
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .content {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        
+        .section {
+            margin-bottom: 2rem;
+        }
+        
+        .section h2 {
+            color: #667eea;
+            margin-bottom: 1rem;
+            font-size: 1.8rem;
+        }
+        
+        .section h3 {
+            color: #764ba2;
+            margin: 1rem 0 0.5rem 0;
+            font-size: 1.3rem;
+        }
+        
+        .section p {
+            margin-bottom: 1rem;
+        }
+        
+        .section ul {
+            margin-left: 2rem;
+            margin-bottom: 1rem;
+        }
+        
+        .section li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .quick-links {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+        
+        .link-card {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-decoration: none;
+            color: #333;
+            transition: all 0.3s ease;
+        }
+        
+        .link-card:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .link-card h3 {
+            color: #667eea;
+            margin-bottom: 0.5rem;
+        }
+        
+        .code-block {
+            background: #f4f4f4;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 1rem;
+            margin: 1rem 0;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+        }
+        
+        .highlight {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 4px;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 3rem;
+            color: white;
+            opacity: 0.8;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .quick-links {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 Nullblock Documentation</h1>
+            <p>Advanced Web3 Trading & Agentic Systems</p>
+        </div>
+        
+        <div class="content">
+            <div class="section">
+                <h2>Welcome to Nullblock</h2>
+                <p>Nullblock is a comprehensive platform that combines Web3 wallet integration, advanced trading systems, and AI-powered agents to create a next-generation trading and automation ecosystem.</p>
+            </div>
+            
+            <div class="section">
+                <h2>🚀 Quick Start</h2>
+                
+                <h3>For Users</h3>
+                <ol>
+                    <li><strong>Connect Your Wallet</strong> - Use the door button to connect Phantom or MetaMask</li>
+                    <li><strong>Access NullEye</strong> - Click the NullEye indicator for advanced features</li>
+                    <li><strong>Explore Trading</strong> - Access arbitrage, social trading, and DeFi automation</li>
+                </ol>
+                
+                <h3>For Developers & Agents</h3>
+                <ol>
+                    <li><strong>Review Architecture</strong> - Understand the system design and components</li>
+                    <li><strong>API Integration</strong> - Connect your applications via our MCP interface</li>
+                    <li><strong>Agent Development</strong> - Build custom trading and automation agents</li>
+                </ol>
+            </div>
+            
+            <div class="section">
+                <h2>🏗️ System Architecture</h2>
+                <p>Nullblock consists of several interconnected services:</p>
+                <ul>
+                    <li><strong>Hecate</strong> - Frontend interface and user experience</li>
+                    <li><strong>Erebus</strong> - Smart contract infrastructure</li>
+                    <li><strong>MCP Server</strong> - Model Context Protocol for AI integration</li>
+                    <li><strong>Trading Agents</strong> - Automated arbitrage and social trading</li>
+                    <li><strong>Orchestration</strong> - Workflow management and coordination</li>
+                </ul>
+            </div>
+            
+            <div class="section">
+                <h2>🔗 Quick Links</h2>
+                <div class="quick-links">
+                    <a href="#getting-started" class="link-card">
+                        <h3>📖 Getting Started</h3>
+                        <p>Complete setup guide for users and developers</p>
+                    </a>
+                    <a href="#api-reference" class="link-card">
+                        <h3>🔌 API Reference</h3>
+                        <p>Comprehensive API documentation for all services</p>
+                    </a>
+                    <a href="#architecture" class="link-card">
+                        <h3>🏛️ Architecture</h3>
+                        <p>Detailed system architecture and component overview</p>
+                    </a>
+                    <a href="#agents" class="link-card">
+                        <h3>🤖 Agents</h3>
+                        <p>Guide to building and deploying trading agents</p>
+                    </a>
+                    <a href="#trading" class="link-card">
+                        <h3>📊 Trading</h3>
+                        <p>Documentation for arbitrage, social trading, and DeFi systems</p>
+                    </a>
+                    <a href="#development" class="link-card">
+                        <h3>🛠️ Development</h3>
+                        <p>Development setup, contribution guidelines, and best practices</p>
+                    </a>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2>🤖 AI/Agent Integration</h2>
+                <p>Nullblock provides comprehensive support for AI agents and automated systems:</p>
+                <ul>
+                    <li><strong>MCP Protocol</strong> - Standardized AI agent communication</li>
+                    <li><strong>Wallet Authentication</strong> - Secure Web3 wallet integration</li>
+                    <li><strong>Trading APIs</strong> - Real-time market data and execution</li>
+                    <li><strong>Workflow Automation</strong> - Complex trading strategy orchestration</li>
+                </ul>
+            </div>
+            
+            <div class="section" id="getting-started">
+                <h2>📖 Getting Started</h2>
+                
+                <h3>🚪 For Users: Wallet Connection</h3>
+                <div class="highlight">
+                    <strong>Step 1: Connect Your Wallet</strong><br>
+                    1. Navigate to the Nullblock interface<br>
+                    2. Click the <strong>door button (🚪)</strong> in the top navigation<br>
+                    3. Choose your preferred wallet:<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;• <strong>Phantom</strong> (Solana) - Recommended for Solana-based trading<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;• <strong>MetaMask</strong> (Ethereum) - For Ethereum-based features
+                </div>
+                
+                <h3>🛠️ For Developers: System Integration</h3>
+                <div class="code-block">
+# Clone the repository
+git clone https://github.com/aetherBytes/nullblock.git
+cd nullblock
+
+# Install frontend dependencies
+cd svc/hecate
+npm install
+
+# Install backend dependencies
+cd ../nullblock-mcp
+pip install -r requirements.txt
+                </div>
+                
+                <h3>🤖 For AI Agents: MCP Integration</h3>
+                <div class="code-block">
+import asyncio
+from mcp import ClientSession, StdioServerParameters
+
+async def connect_to_nullblock():
+    async with ClientSession(StdioServerParameters(
+        command="python", 
+        args=["-m", "mcp.server"]
+    )) as session:
+        await session.initialize()
+        tools = await session.list_tools()
+        print("Available tools:", tools)
+                </div>
+            </div>
+            
+            <div class="section" id="api-reference">
+                <h2>🔌 API Reference</h2>
+                
+                <h3>MCP (Model Context Protocol)</h3>
+                <p>Nullblock uses the MCP standard for AI agent integration:</p>
+                
+                <h4>Available Tools</h4>
+                <ul>
+                    <li><code>get_market_data</code> - Real-time market data</li>
+                    <li><code>execute_trade</code> - Execute trading orders</li>
+                    <li><code>get_portfolio</code> - Portfolio information</li>
+                    <li><code>social_sentiment</code> - Social media sentiment analysis</li>
+                    <li><code>arbitrage_opportunities</code> - Find arbitrage opportunities</li>
+                </ul>
+                
+                <h4>Example Usage</h4>
+                <div class="code-block">
+# Get real-time market data
+result = await session.call_tool("get_market_data", {
+    "symbol": "ETH/USD",
+    "exchange": "binance"
+})
+
+# Execute a trade
+result = await session.call_tool("execute_trade", {
+    "symbol": "ETH/USD",
+    "side": "buy",
+    "amount": 1.5,
+    "price": 2450.00
+})
+                </div>
+                
+                <h3>REST API Endpoints</h3>
+                <div class="code-block">
+Base URL: https://api.nullblock.io/v1
+
+GET /market/price/{symbol}
+GET /market/volume/{symbol}
+POST /trade/order
+GET /portfolio/{wallet_address}
+                </div>
+            </div>
+            
+            <div class="section" id="architecture">
+                <h2>🏛️ System Architecture</h2>
+                
+                <h3>Frontend (Hecate)</h3>
+                <ul>
+                    <li><strong>Technology</strong>: React + TypeScript + Vite</li>
+                    <li><strong>Features</strong>: HUD interface, wallet integration, real-time data</li>
+                    <li><strong>Location</strong>: <code>svc/hecate/</code></li>
+                </ul>
+                
+                <h3>Smart Contracts (Erebus)</h3>
+                <ul>
+                    <li><strong>Technology</strong>: Rust + Solana</li>
+                    <li><strong>Features</strong>: Trading execution, portfolio management</li>
+                    <li><strong>Location</strong>: <code>svc/erebus/</code></li>
+                </ul>
+                
+                <h3>MCP Server</h3>
+                <ul>
+                    <li><strong>Technology</strong>: Python + FastAPI</li>
+                    <li><strong>Features</strong>: AI agent integration, trading APIs</li>
+                    <li><strong>Location</strong>: <code>svc/nullblock-mcp/</code></li>
+                </ul>
+                
+                <h3>Trading Agents</h3>
+                <ul>
+                    <li><strong>Technology</strong>: Python</li>
+                    <li><strong>Features</strong>: Automated arbitrage, social trading</li>
+                    <li><strong>Location</strong>: <code>svc/nullblock-agents/</code></li>
+                </ul>
+            </div>
+            
+            <div class="section" id="agents">
+                <h2>🤖 Agent Development</h2>
+                
+                <h3>Python Agent Template</h3>
+                <div class="code-block">
+import asyncio
+from mcp import ClientSession, StdioServerParameters
+
+class NullblockAgent:
+    def __init__(self):
+        self.session = None
+    
+    async def connect(self):
+        self.session = await ClientSession(StdioServerParameters(
+            command="python", 
+            args=["-m", "mcp.server"]
+        )).__aenter__()
+        await self.session.initialize()
+    
+    async def run_strategy(self):
+        market_data = await self.session.call_tool("get_market_data", {"symbol": "ETH/USD"})
+        
+        if market_data["change_24h"] > 5:  # 5% gain in 24h
+            await self.session.call_tool("execute_trade", {
+                "symbol": "ETH/USD",
+                "side": "sell",
+                "amount": 1.0,
+                "price": market_data["price"]
+            })
+
+# Usage
+async def main():
+    agent = NullblockAgent()
+    await agent.connect()
+    await agent.run_strategy()
+
+if __name__ == "__main__":
+    asyncio.run(main())
+                </div>
+            </div>
+            
+            <div class="section" id="trading">
+                <h2>📊 Trading Systems</h2>
+                
+                <h3>Arbitrage Trading</h3>
+                <p>Automated arbitrage detection and execution across multiple exchanges:</p>
+                <ul>
+                    <li>Real-time price monitoring</li>
+                    <li>Cross-exchange arbitrage opportunities</li>
+                    <li>Automated execution with slippage protection</li>
+                    <li>Risk management and position sizing</li>
+                </ul>
+                
+                <h3>Social Trading</h3>
+                <p>AI-powered social sentiment analysis and trading:</p>
+                <ul>
+                    <li>Social media sentiment monitoring</li>
+                    <li>Trend detection and analysis</li>
+                    <li>Automated trading based on social signals</li>
+                    <li>Community-driven trading strategies</li>
+                </ul>
+                
+                <h3>DeFi Integration</h3>
+                <p>Comprehensive DeFi protocol integration:</p>
+                <ul>
+                    <li>Yield farming automation</li>
+                    <li>Liquidity provision strategies</li>
+                    <li>Flash loan arbitrage</li>
+                    <li>Cross-chain DeFi operations</li>
+                </ul>
+            </div>
+            
+            <div class="section" id="development">
+                <h2>🛠️ Development</h2>
+                
+                <h3>Prerequisites</h3>
+                <ul>
+                    <li>Node.js 18+ and npm/yarn</li>
+                    <li>Python 3.8+</li>
+                    <li>Git</li>
+                    <li>Web3 wallet (Phantom or MetaMask)</li>
+                </ul>
+                
+                <h3>Environment Setup</h3>
+                <div class="code-block">
+# Frontend environment
+VITE_API_URL=http://localhost:8000
+VITE_MCP_URL=http://localhost:8001
+
+# MCP Server environment
+MCP_PORT=8001
+FLASHBOTS_RPC_URL=your_flashbots_url
+                </div>
+                
+                <h3>Starting Development Servers</h3>
+                <div class="code-block">
+# Start frontend
+cd svc/hecate
+npm run dev
+
+# Start MCP server (in another terminal)
+cd svc/nullblock-mcp
+python -m mcp.server
+                </div>
+                
+                <h3>Contributing</h3>
+                <p>We welcome contributions! Please follow these steps:</p>
+                <ol>
+                    <li>Fork the repository</li>
+                    <li>Create a feature branch</li>
+                    <li>Make your changes</li>
+                    <li>Add tests if applicable</li>
+                    <li>Submit a pull request</li>
+                </ol>
+            </div>
+            
+            <div class="section">
+                <h2>🚨 Troubleshooting</h2>
+                
+                <h3>Common Issues</h3>
+                
+                <h4>Wallet Connection Fails</h4>
+                <ul>
+                    <li>Ensure wallet extension is installed and unlocked</li>
+                    <li>Check browser console for error messages</li>
+                    <li>Try refreshing the page and reconnecting</li>
+                </ul>
+                
+                <h4>MCP Connection Issues</h4>
+                <ul>
+                    <li>Verify MCP server is running on correct port</li>
+                    <li>Check firewall settings</li>
+                    <li>Ensure Python dependencies are installed</li>
+                </ul>
+                
+                <h4>Trading Features Not Available</h4>
+                <ul>
+                    <li>Confirm wallet is connected</li>
+                    <li>Check if you're on the correct network</li>
+                    <li>Verify sufficient balance for trading</li>
+                </ul>
+                
+                <h3>Getting Help</h3>
+                <ul>
+                    <li><strong>GitHub Issues</strong>: <a href="https://github.com/aetherBytes/nullblock/issues" target="_blank">Create an issue</a></li>
+                    <li><strong>Documentation</strong>: Check the API Reference for detailed information</li>
+                    <li><strong>Community</strong>: Join our Discord or Telegram channels</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p><strong>Need Help?</strong> Join our community or open an issue on <a href="https://github.com/aetherBytes/nullblock" target="_blank" style="color: white;">GitHub</a></p>
+        </div>
+    </div>
+</body>
+</html>
