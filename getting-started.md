@@ -51,14 +51,14 @@ pip install -r requirements.txt
 Create environment files for each service:
 
 **Hecate (Frontend)**
-```bash
+```env
 # svc/hecate/.env
 VITE_API_URL=http://localhost:8000
 VITE_MCP_URL=http://localhost:8001
 ```
 
 **MCP Server**
-```bash
+```env
 # svc/nullblock-mcp/.env
 MCP_PORT=8001
 FLASHBOTS_RPC_URL=your_flashbots_url

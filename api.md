@@ -34,6 +34,7 @@ result = await session.call_tool("get_market_data", {
 })
 
 # Response
+```json
 {
     "price": 2450.50,
     "volume": 1234567.89,
@@ -54,6 +55,7 @@ result = await session.call_tool("execute_trade", {
 })
 
 # Response
+```json
 {
     "tx_hash": "0x123...",
     "status": "confirmed",
@@ -70,6 +72,7 @@ result = await session.call_tool("get_portfolio", {
 })
 
 # Response
+```json
 {
     "total_value": 15000.00,
     "assets": [
@@ -94,6 +97,7 @@ result = await session.call_tool("social_sentiment", {
 })
 
 # Response
+```json
 {
     "sentiment_score": 0.75,
     "mentions": 1250,
@@ -111,6 +115,7 @@ result = await session.call_tool("arbitrage_opportunities", {
 })
 
 # Response
+```json
 {
     "opportunities": [
         {
@@ -127,31 +132,31 @@ result = await session.call_tool("arbitrage_opportunities", {
 ## 🌐 REST API Endpoints
 
 ### Base URL
-```
+```http
 https://api.nullblock.io/v1
 ```
 
 ### Authentication
-```bash
+```http
 Authorization: Bearer YOUR_API_KEY
 ```
 
 ### Market Data
-```bash
+```http
 GET /market/price/{symbol}
 GET /market/volume/{symbol}
 GET /market/orderbook/{symbol}
 ```
 
 ### Trading
-```bash
+```http
 POST /trade/order
 GET /trade/orders
 GET /trade/history
 ```
 
 ### Portfolio
-```bash
+```http
 GET /portfolio/{wallet_address}
 GET /portfolio/performance/{wallet_address}
 ```
