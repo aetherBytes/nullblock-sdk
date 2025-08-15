@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nullblock Documentation</title>
+    <title>Nullblock SDK Documentation</title>
     <style>
         * {
             margin: 0;
@@ -116,12 +116,32 @@
             overflow-x: auto;
         }
         
-        .highlight {
-            background: #fff3cd;
-            border: 1px solid #ffeaa7;
-            border-radius: 4px;
-            padding: 1rem;
-            margin: 1rem 0;
+        .installation-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+        
+        .install-card {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 1.5rem;
+        }
+        
+        .install-card h4 {
+            color: #667eea;
+            margin-bottom: 1rem;
+        }
+        
+        .badges {
+            text-align: center;
+            margin: 2rem 0;
+        }
+        
+        .badges img {
+            margin: 0 0.5rem;
         }
         
         .footer {
@@ -149,359 +169,178 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>🚀 Nullblock Documentation</h1>
+            <h1>🚀 Nullblock SDK</h1>
             <p>Advanced Web3 Trading & Agentic Systems</p>
         </div>
         
         <div class="content">
-            <div class="section">
-                <h2>Welcome to Nullblock</h2>
-                <p>Nullblock is a comprehensive platform that combines Web3 wallet integration, advanced trading systems, and AI-powered agents to create a next-generation trading and automation ecosystem.</p>
+            <div class="badges">
+                <img src="https://img.shields.io/badge/docs-available-brightgreen" alt="Documentation">
+                <img src="https://img.shields.io/pypi/v/nullblock-sdk" alt="Python SDK">
+                <img src="https://img.shields.io/npm/v/@nullblock/sdk" alt="JavaScript SDK">
+                <img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License">
             </div>
             
             <div class="section">
-                <h2>🚀 Quick Start</h2>
-                
-                <h3>For Users</h3>
-                <ol>
-                    <li><strong>Connect Your Wallet</strong> - Use the door button to connect Phantom or MetaMask</li>
-                    <li><strong>Access NullEye</strong> - Click the NullEye indicator for advanced features</li>
-                    <li><strong>Explore Trading</strong> - Access arbitrage, social trading, and DeFi automation</li>
-                </ol>
-                
-                <h3>For Developers & Agents</h3>
-                <ol>
-                    <li><strong>Review Architecture</strong> - Understand the system design and components</li>
-                    <li><strong>API Integration</strong> - Connect your applications via our MCP interface</li>
-                    <li><strong>Agent Development</strong> - Build custom trading and automation agents</li>
-                </ol>
+                <h2>Welcome to Nullblock SDK</h2>
+                <p>Official SDKs and documentation for Nullblock - a comprehensive platform that combines Web3 wallet integration, advanced trading systems, and AI-powered agents to create a next-generation trading and automation ecosystem.</p>
             </div>
             
             <div class="section">
-                <h2>🏗️ System Architecture</h2>
-                <p>Nullblock consists of several interconnected services:</p>
+                <h2>🚀 Quick Installation</h2>
+                
+                <div class="installation-grid">
+                    <div class="install-card">
+                        <h4>🐍 Python SDK</h4>
+                        <div class="code-block">pip install nullblock-sdk</div>
+                        <p>Full API support, MCP integration, async/await</p>
+                    </div>
+                    
+                    <div class="install-card">
+                        <h4>📦 JavaScript/TypeScript SDK</h4>
+                        <div class="code-block">npm install @nullblock/sdk</div>
+                        <p>TypeScript support, WebSocket, React integration</p>
+                    </div>
+                    
+                    <div class="install-card">
+                        <h4>🦀 Rust SDK</h4>
+                        <div class="code-block">cargo add nullblock-sdk</div>
+                        <p>High-performance, async, memory-safe</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2>🌟 Features</h2>
                 <ul>
-                    <li><strong>Hecate</strong> - Frontend interface and user experience</li>
-                    <li><strong>Erebus</strong> - Smart contract infrastructure</li>
-                    <li><strong>MCP Server</strong> - Model Context Protocol for AI integration</li>
-                    <li><strong>Trading Agents</strong> - Automated arbitrage and social trading</li>
-                    <li><strong>Orchestration</strong> - Workflow management and coordination</li>
+                    <li><strong>Real-time Market Data</strong> - Live price feeds and market information</li>
+                    <li><strong>Trading Execution</strong> - Secure order execution with MEV protection</li>
+                    <li><strong>Portfolio Management</strong> - Track and manage your positions</li>
+                    <li><strong>Social Sentiment</strong> - AI-powered sentiment analysis</li>
+                    <li><strong>Arbitrage Detection</strong> - Automated arbitrage opportunity detection</li>
+                    <li><strong>MCP Integration</strong> - Model Context Protocol for AI agents</li>
+                    <li><strong>Multi-chain Support</strong> - Ethereum, Solana, and more</li>
+                    <li><strong>WebSocket Support</strong> - Real-time data streaming</li>
                 </ul>
             </div>
             
             <div class="section">
                 <h2>🔗 Quick Links</h2>
                 <div class="quick-links">
-                    <a href="#getting-started" class="link-card">
+                    <a href="guides/getting-started/" class="link-card">
                         <h3>📖 Getting Started</h3>
-                        <p>Complete setup guide for users and developers</p>
+                        <p>Setup guides and basic usage examples</p>
                     </a>
-                    <a href="#api-reference" class="link-card">
+                    <a href="api/" class="link-card">
                         <h3>🔌 API Reference</h3>
-                        <p>Comprehensive API documentation for all services</p>
+                        <p>Complete API documentation for all services</p>
                     </a>
-                    <a href="#architecture" class="link-card">
+                    <a href="guides/architecture/" class="link-card">
                         <h3>🏛️ Architecture</h3>
-                        <p>Detailed system architecture and component overview</p>
+                        <p>System architecture and component overview</p>
                     </a>
-                    <a href="#agents" class="link-card">
-                        <h3>🤖 Agents</h3>
+                    <a href="guides/agents/" class="link-card">
+                        <h3>🤖 AI Agents</h3>
                         <p>Guide to building and deploying trading agents</p>
                     </a>
-                    <a href="#trading" class="link-card">
+                    <a href="guides/trading/" class="link-card">
                         <h3>📊 Trading</h3>
-                        <p>Documentation for arbitrage, social trading, and DeFi systems</p>
+                        <p>Arbitrage, social trading, and DeFi systems</p>
                     </a>
-                    <a href="#development" class="link-card">
-                        <h3>🛠️ Development</h3>
-                        <p>Development setup, contribution guidelines, and best practices</p>
+                    <a href="https://github.com/aetherBytes/nullblock-sdk/tree/main/examples" class="link-card">
+                        <h3>💻 Examples</h3>
+                        <p>Code examples and ready-to-use templates</p>
                     </a>
                 </div>
             </div>
             
             <div class="section">
                 <h2>🤖 AI/Agent Integration</h2>
-                <p>Nullblock provides comprehensive support for AI agents and automated systems:</p>
-                <ul>
-                    <li><strong>MCP Protocol</strong> - Standardized AI agent communication</li>
-                    <li><strong>Wallet Authentication</strong> - Secure Web3 wallet integration</li>
-                    <li><strong>Trading APIs</strong> - Real-time market data and execution</li>
-                    <li><strong>Workflow Automation</strong> - Complex trading strategy orchestration</li>
-                </ul>
-            </div>
-            
-            <div class="section" id="getting-started">
-                <h2>📖 Getting Started</h2>
+                <p>Nullblock provides comprehensive support for AI agents through the Model Context Protocol (MCP):</p>
                 
-                <h3>🚪 For Users: Wallet Connection</h3>
-                <div class="highlight">
-                    <strong>Step 1: Connect Your Wallet</strong><br>
-                    1. Navigate to the Nullblock interface<br>
-                    2. Click the <strong>door button (🚪)</strong> in the top navigation<br>
-                    3. Choose your preferred wallet:<br>
-                    &nbsp;&nbsp;&nbsp;&nbsp;• <strong>Phantom</strong> (Solana) - Recommended for Solana-based trading<br>
-                    &nbsp;&nbsp;&nbsp;&nbsp;• <strong>MetaMask</strong> (Ethereum) - For Ethereum-based features
-                </div>
-                
-                <h3>🛠️ For Developers: System Integration</h3>
-                <div class="code-block">
-# Clone the repository
-git clone https://github.com/aetherBytes/nullblock.git
-cd nullblock
-
-# Install frontend dependencies
-cd svc/hecate
-npm install
-
-# Install backend dependencies
-cd ../nullblock-mcp
-pip install -r requirements.txt
-                </div>
-                
-                <h3>🤖 For AI Agents: MCP Integration</h3>
                 <div class="code-block">
 import asyncio
-from mcp import ClientSession, StdioServerParameters
+from nullblock.mcp import NullblockMCPServer
 
-async def connect_to_nullblock():
-    async with ClientSession(StdioServerParameters(
-        command="python", 
-        args=["-m", "mcp.server"]
-    )) as session:
-        await session.initialize()
-        tools = await session.list_tools()
-        print("Available tools:", tools)
-                </div>
-            </div>
-            
-            <div class="section" id="api-reference">
-                <h2>🔌 API Reference</h2>
-                
-                <h3>MCP (Model Context Protocol)</h3>
-                <p>Nullblock uses the MCP standard for AI agent integration:</p>
-                
-                <h4>Available Tools</h4>
-                <ul>
-                    <li><code>get_market_data</code> - Real-time market data</li>
-                    <li><code>execute_trade</code> - Execute trading orders</li>
-                    <li><code>get_portfolio</code> - Portfolio information</li>
-                    <li><code>social_sentiment</code> - Social media sentiment analysis</li>
-                    <li><code>arbitrage_opportunities</code> - Find arbitrage opportunities</li>
-                </ul>
-                
-                <h4>Example Usage</h4>
-                <div class="code-block">
-# Get real-time market data
-result = await session.call_tool("get_market_data", {
-    "symbol": "ETH/USD",
-    "exchange": "binance"
-})
-
-# Execute a trade
-result = await session.call_tool("execute_trade", {
-    "symbol": "ETH/USD",
-    "side": "buy",
-    "amount": 1.5,
-    "price": 2450.00
-})
-                </div>
-                
-                <h3>REST API Endpoints</h3>
-                <div class="code-block">
-Base URL: https://api.nullblock.io/v1
-
-GET /market/price/{symbol}
-GET /market/volume/{symbol}
-POST /trade/order
-GET /portfolio/{wallet_address}
-                </div>
-            </div>
-            
-            <div class="section" id="architecture">
-                <h2>🏛️ System Architecture</h2>
-                
-                <h3>Frontend (Hecate)</h3>
-                <ul>
-                    <li><strong>Technology</strong>: React + TypeScript + Vite</li>
-                    <li><strong>Features</strong>: HUD interface, wallet integration, real-time data</li>
-                    <li><strong>Location</strong>: <code>svc/hecate/</code></li>
-                </ul>
-                
-                <h3>Smart Contracts (Erebus)</h3>
-                <ul>
-                    <li><strong>Technology</strong>: Rust + Solana</li>
-                    <li><strong>Features</strong>: Trading execution, portfolio management</li>
-                    <li><strong>Location</strong>: <code>svc/erebus/</code></li>
-                </ul>
-                
-                <h3>MCP Server</h3>
-                <ul>
-                    <li><strong>Technology</strong>: Python + FastAPI</li>
-                    <li><strong>Features</strong>: AI agent integration, trading APIs</li>
-                    <li><strong>Location</strong>: <code>svc/nullblock-mcp/</code></li>
-                </ul>
-                
-                <h3>Trading Agents</h3>
-                <ul>
-                    <li><strong>Technology</strong>: Python</li>
-                    <li><strong>Features</strong>: Automated arbitrage, social trading</li>
-                    <li><strong>Location</strong>: <code>svc/nullblock-agents/</code></li>
-                </ul>
-            </div>
-            
-            <div class="section" id="agents">
-                <h2>🤖 Agent Development</h2>
-                
-                <h3>Python Agent Template</h3>
-                <div class="code-block">
-import asyncio
-from mcp import ClientSession, StdioServerParameters
-
-class NullblockAgent:
-    def __init__(self):
-        self.session = None
-    
-    async def connect(self):
-        self.session = await ClientSession(StdioServerParameters(
-            command="python", 
-            args=["-m", "mcp.server"]
-        )).__aenter__()
-        await self.session.initialize()
-    
-    async def run_strategy(self):
-        market_data = await self.session.call_tool("get_market_data", {"symbol": "ETH/USD"})
-        
-        if market_data["change_24h"] > 5:  # 5% gain in 24h
-            await self.session.call_tool("execute_trade", {
-                "symbol": "ETH/USD",
-                "side": "sell",
-                "amount": 1.0,
-                "price": market_data["price"]
-            })
-
-# Usage
 async def main():
-    agent = NullblockAgent()
-    await agent.connect()
-    await agent.run_strategy()
+    # Start MCP server
+    server = NullblockMCPServer(api_key='YOUR_API_KEY')
+    
+    # Available tools
+    tools = await server.list_tools()
+    print("Available tools:", tools)
+    
+    # Use a tool
+    result = await server.call_tool("get_market_data", {
+        "symbol": "ETH/USD"
+    })
+    print("Market data:", result)
 
 if __name__ == "__main__":
     asyncio.run(main())
                 </div>
             </div>
             
-            <div class="section" id="trading">
-                <h2>📊 Trading Systems</h2>
+            <div class="section">
+                <h2>🚀 Quick Start</h2>
                 
-                <h3>Arbitrage Trading</h3>
-                <p>Automated arbitrage detection and execution across multiple exchanges:</p>
-                <ul>
-                    <li>Real-time price monitoring</li>
-                    <li>Cross-exchange arbitrage opportunities</li>
-                    <li>Automated execution with slippage protection</li>
-                    <li>Risk management and position sizing</li>
-                </ul>
-                
-                <h3>Social Trading</h3>
-                <p>AI-powered social sentiment analysis and trading:</p>
-                <ul>
-                    <li>Social media sentiment monitoring</li>
-                    <li>Trend detection and analysis</li>
-                    <li>Automated trading based on social signals</li>
-                    <li>Community-driven trading strategies</li>
-                </ul>
-                
-                <h3>DeFi Integration</h3>
-                <p>Comprehensive DeFi protocol integration:</p>
-                <ul>
-                    <li>Yield farming automation</li>
-                    <li>Liquidity provision strategies</li>
-                    <li>Flash loan arbitrage</li>
-                    <li>Cross-chain DeFi operations</li>
-                </ul>
-            </div>
-            
-            <div class="section" id="development">
-                <h2>🛠️ Development</h2>
-                
-                <h3>Prerequisites</h3>
-                <ul>
-                    <li>Node.js 18+ and npm/yarn</li>
-                    <li>Python 3.8+</li>
-                    <li>Git</li>
-                    <li>Web3 wallet (Phantom or MetaMask)</li>
-                </ul>
-                
-                <h3>Environment Setup</h3>
+                <h3>Python Example</h3>
                 <div class="code-block">
-# Frontend environment
-VITE_API_URL=http://localhost:8000
-VITE_MCP_URL=http://localhost:8001
+from nullblock import NullblockClient
 
-# MCP Server environment
-MCP_PORT=8001
-FLASHBOTS_RPC_URL=your_flashbots_url
+# Initialize client
+client = NullblockClient(api_key='YOUR_API_KEY')
+
+# Get market data
+market_data = client.get_market_data('ETH/USD')
+print(f"ETH Price: ${market_data['price']}")
+
+# Execute a trade
+trade_result = client.execute_trade(
+    symbol='ETH/USD',
+    side='buy',
+    amount=1.0,
+    price=2450.00
+)
+print(f"Trade executed: {trade_result['tx_hash']}")
                 </div>
                 
-                <h3>Starting Development Servers</h3>
+                <h3>JavaScript Example</h3>
                 <div class="code-block">
-# Start frontend
-cd svc/hecate
-npm run dev
+import { NullblockClient } from '@nullblock/sdk';
 
-# Start MCP server (in another terminal)
-cd svc/nullblock-mcp
-python -m mcp.server
+// Initialize client
+const client = new NullblockClient('YOUR_API_KEY');
+
+// Get market data
+const marketData = await client.getMarketData('ETH/USD');
+console.log(`ETH Price: $${marketData.price}`);
+
+// Execute a trade
+const tradeResult = await client.executeTrade({
+  symbol: 'ETH/USD',
+  side: 'buy',
+  amount: 1.0,
+  price: 2450.00
+});
+console.log(`Trade executed: ${tradeResult.txHash}`);
                 </div>
-                
-                <h3>Contributing</h3>
-                <p>We welcome contributions! Please follow these steps:</p>
-                <ol>
-                    <li>Fork the repository</li>
-                    <li>Create a feature branch</li>
-                    <li>Make your changes</li>
-                    <li>Add tests if applicable</li>
-                    <li>Submit a pull request</li>
-                </ol>
             </div>
             
             <div class="section">
-                <h2>🚨 Troubleshooting</h2>
-                
-                <h3>Common Issues</h3>
-                
-                <h4>Wallet Connection Fails</h4>
+                <h2>🆘 Support</h2>
                 <ul>
-                    <li>Ensure wallet extension is installed and unlocked</li>
-                    <li>Check browser console for error messages</li>
-                    <li>Try refreshing the page and reconnecting</li>
-                </ul>
-                
-                <h4>MCP Connection Issues</h4>
-                <ul>
-                    <li>Verify MCP server is running on correct port</li>
-                    <li>Check firewall settings</li>
-                    <li>Ensure Python dependencies are installed</li>
-                </ul>
-                
-                <h4>Trading Features Not Available</h4>
-                <ul>
-                    <li>Confirm wallet is connected</li>
-                    <li>Check if you're on the correct network</li>
-                    <li>Verify sufficient balance for trading</li>
-                </ul>
-                
-                <h3>Getting Help</h3>
-                <ul>
-                    <li><strong>GitHub Issues</strong>: <a href="https://github.com/aetherBytes/nullblock/issues" target="_blank">Create an issue</a></li>
-                    <li><strong>Documentation</strong>: Check the API Reference for detailed information</li>
-                    <li><strong>Community</strong>: Join our Discord or Telegram channels</li>
+                    <li><strong>Documentation</strong>: Complete guides and API reference</li>
+                    <li><strong>GitHub Issues</strong>: <a href="https://github.com/aetherBytes/nullblock-sdk/issues" target="_blank">Report bugs and request features</a></li>
+                    <li><strong>Discord</strong>: <a href="https://discord.gg/nullblock" target="_blank">Join our community</a></li>
+                    <li><strong>Email</strong>: support@nullblock.io</li>
                 </ul>
             </div>
         </div>
         
         <div class="footer">
-            <p><strong>Need Help?</strong> Join our community or open an issue on <a href="https://github.com/aetherBytes/nullblock" target="_blank" style="color: white;">GitHub</a></p>
+            <p><strong>Built with ❤️ by the Nullblock Team</strong></p>
+            <p>Empowering the future of decentralized agentic workflows</p>
         </div>
     </div>
 </body>
