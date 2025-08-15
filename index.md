@@ -71,4 +71,12 @@ Development setup, contribution guidelines, and best practices
 
 ---
 
-**Need Help?** Join our community or open an issue on [GitHub](https://github.com/aetherBytes/nullblock).
+## 🔗 Resources
+
+- **📦 [GitHub Repository](https://github.com/aetherBytes/nullblock-sdk)** - Complete source code and examples
+- **🐛 [Report Issues](https://github.com/aetherBytes/nullblock-sdk/issues)** - Bug reports and feature requests  
+- **💻 [Code Examples](https://github.com/aetherBytes/nullblock-sdk/tree/main/examples)** - Ready-to-use code samples
+- **📋 [Python SDK](https://github.com/aetherBytes/nullblock-sdk/tree/main/sdk/python)** - Python integration
+- **🟨 [JavaScript SDK](https://github.com/aetherBytes/nullblock-sdk/tree/main/sdk/javascript)** - JavaScript/Node.js integration
+
+**Need Help?** Join our community or open an issue on [GitHub](https://github.com/aetherBytes/nullblock-sdk).

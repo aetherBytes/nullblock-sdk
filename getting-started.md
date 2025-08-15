@@ -32,9 +32,11 @@ Once connected:
 
 ### Step 1: Clone the Repository
 ```bash
-git clone https://github.com/aetherBytes/nullblock.git
-cd nullblock
+git clone https://github.com/aetherBytes/nullblock-sdk.git
+cd nullblock-sdk
 ```
+
+**📦 [View Full Repository on GitHub](https://github.com/aetherBytes/nullblock-sdk)**
 
 ### Step 2: Install Dependencies
 ```bash
@@ -108,6 +110,8 @@ async def connect_to_nullblock():
 - `social_sentiment` - Social media sentiment analysis
 - `arbitrage_opportunities` - Find arbitrage opportunities
 
+**📂 [Browse Complete MCP Examples](https://github.com/aetherBytes/nullblock-sdk/tree/main/examples/agents)**
+
 ## 📊 System Components
 
 ### Frontend (Hecate)
@@ -179,8 +183,9 @@ const API_ENDPOINTS = {
 - Verify sufficient balance for trading
 
 ### Getting Help
-- **GitHub Issues**: [Create an issue](https://github.com/aetherBytes/nullblock/issues)
+- **GitHub Issues**: [Create an issue](https://github.com/aetherBytes/nullblock-sdk/issues)
 - **Documentation**: Check the [API Reference](api/) for detailed information
+- **Examples**: Browse [code examples](https://github.com/aetherBytes/nullblock-sdk/tree/main/examples)
 - **Community**: Join our Discord or Telegram channels
 
 ## 🎯 Next Steps

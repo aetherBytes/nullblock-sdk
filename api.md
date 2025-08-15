@@ -378,6 +378,8 @@ client = NullblockClient(api_key='YOUR_API_KEY')
 market_data = client.get_market_data('ETH/USD')
 ```
 
+**📦 [View Python SDK on GitHub](https://github.com/aetherBytes/nullblock-sdk/tree/main/sdk/python)**
+
 ### JavaScript SDK
 ```bash
 npm install @nullblock/sdk
@@ -390,6 +392,16 @@ const client = new NullblockClient('YOUR_API_KEY');
 const marketData = await client.getMarketData('ETH/USD');
 ```
 
+**📦 [View JavaScript SDK on GitHub](https://github.com/aetherBytes/nullblock-sdk/tree/main/sdk/javascript)**
+
 ---
+
+## 📂 More Resources
+
+- **🔗 [Complete SDK Repository](https://github.com/aetherBytes/nullblock-sdk)** - Full source code and documentation
+- **📝 [Code Examples](https://github.com/aetherBytes/nullblock-sdk/tree/main/examples)** - Ready-to-use examples for all features
+- **🐛 [Report Issues](https://github.com/aetherBytes/nullblock-sdk/issues)** - Bug reports and feature requests
+- **📋 [Python SDK](https://github.com/aetherBytes/nullblock-sdk/tree/main/sdk/python)** - Python SDK source and documentation
+- **🟨 [JavaScript SDK](https://github.com/aetherBytes/nullblock-sdk/tree/main/sdk/javascript)** - JavaScript SDK source and documentation
 
 For more detailed examples and advanced usage, check out the [Getting Started](getting-started/) guide or [Architecture](architecture/) documentation.
