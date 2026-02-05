@@ -3,165 +3,154 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nullblock SDK Documentation</title>
+    <title>NullBlock SDK - Manifesto</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-        
+
+        :root {
+            --bg: #1a1a2e;
+            --bg-secondary: #16213e;
+            --fg: #e8e8e8;
+            --gold: #e6c200;
+            --cyan: #4fc3f7;
+        }
+
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            line-height: 1.8;
+            color: var(--fg);
+            background: var(--bg);
             min-height: 100vh;
         }
-        
+
         .container {
-            max-width: 1200px;
+            max-width: 800px;
             margin: 0 auto;
             padding: 2rem;
         }
-        
+
         .header {
-            text-align: center;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             margin-bottom: 3rem;
-            color: white;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #333;
         }
-        
+
         .header h1 {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            font-size: 1.5rem;
+            color: var(--gold);
         }
-        
-        .header p {
-            font-size: 1.2rem;
-            opacity: 0.9;
-        }
-        
-        .content {
-            background: white;
-            border-radius: 10px;
-            padding: 2rem;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-        }
-        
-        .section {
-            margin-bottom: 2rem;
-        }
-        
-        .section h2 {
-            color: #667eea;
-            margin-bottom: 1rem;
-            font-size: 1.8rem;
-        }
-        
-        .section h3 {
-            color: #764ba2;
-            margin: 1rem 0 0.5rem 0;
-            font-size: 1.3rem;
-        }
-        
-        .section p {
-            margin-bottom: 1rem;
-        }
-        
-        .section ul {
-            margin-left: 2rem;
-            margin-bottom: 1rem;
-        }
-        
-        .section li {
-            margin-bottom: 0.5rem;
-        }
-        
-        .quick-links {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1rem;
-            margin: 2rem 0;
-        }
-        
-        .link-card {
-            background: #f8f9fa;
-            border: 2px solid #e9ecef;
-            border-radius: 8px;
-            padding: 1.5rem;
-            text-decoration: none;
-            color: #333;
-            transition: all 0.3s ease;
-        }
-        
-        .link-card:hover {
-            border-color: #667eea;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
-        
-        .link-card h3 {
-            color: #667eea;
-            margin-bottom: 0.5rem;
-        }
-        
-        .code-block {
-            background: #f4f4f4;
-            border: 1px solid #ddd;
+
+        .copy-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            background: rgba(230, 194, 0, 0.15);
+            border: 1px solid var(--gold);
             border-radius: 4px;
-            padding: 1rem;
-            margin: 1rem 0;
-            font-family: 'Courier New', monospace;
-            overflow-x: auto;
+            color: var(--gold);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
         }
-        
-        .installation-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 1rem;
-            margin: 2rem 0;
+
+        .copy-button:hover {
+            background: rgba(230, 194, 0, 0.3);
+            transform: translateY(-1px);
         }
-        
-        .install-card {
-            background: #f8f9fa;
-            border: 2px solid #e9ecef;
+
+        .copy-button:active {
+            transform: translateY(0);
+        }
+
+        .copy-button.success {
+            background: rgba(76, 175, 80, 0.2);
+            border-color: #4caf50;
+            color: #4caf50;
+        }
+
+        .content {
+            padding: 2rem 0;
+        }
+
+        .content h1 {
+            font-size: 2.5rem;
+            color: var(--gold);
+            margin-bottom: 2rem;
+            border-bottom: 2px solid var(--gold);
+            padding-bottom: 0.5rem;
+        }
+
+        .content p {
+            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
+        }
+
+        .content .lead {
+            font-size: 1.3rem;
+            font-weight: 500;
+        }
+
+        .timeline {
+            background: var(--bg-secondary);
+            border: 1px solid #333;
             border-radius: 8px;
-            padding: 1.5rem;
-        }
-        
-        .install-card h4 {
-            color: #667eea;
-            margin-bottom: 1rem;
-        }
-        
-        .badges {
-            text-align: center;
+            padding: 1.5rem 2rem;
             margin: 2rem 0;
+            font-family: 'JetBrains Mono', 'Fira Code', monospace;
+            font-size: 1rem;
+            line-height: 2;
         }
-        
-        .badges img {
-            margin: 0 0.5rem;
+
+        .timeline span {
+            color: var(--gold);
         }
-        
-        .footer {
-            text-align: center;
+
+        .signature {
             margin-top: 3rem;
-            color: white;
-            opacity: 0.8;
+            font-style: italic;
+            color: #888;
         }
-        
+
+        .footer {
+            margin-top: 4rem;
+            padding-top: 2rem;
+            border-top: 1px solid #333;
+            text-align: center;
+            color: #666;
+        }
+
+        .footer a {
+            color: var(--cyan);
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            color: var(--gold);
+            text-decoration: underline;
+        }
+
         @media (max-width: 768px) {
             .container {
                 padding: 1rem;
             }
-            
-            .header h1 {
-                font-size: 2rem;
+
+            .header {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
             }
-            
-            .quick-links {
-                grid-template-columns: 1fr;
+
+            .content h1 {
+                font-size: 2rem;
             }
         }
     </style>
@@ -169,179 +158,99 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>🚀 Nullblock SDK</h1>
-            <p>Advanced Web3 Trading & Agentic Systems</p>
+            <h1>NullBlock SDK</h1>
+            <button class="copy-button" id="copy-btn" onclick="copyForAI()">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+                <span>Copy for AI</span>
+            </button>
         </div>
-        
-        <div class="content">
-            <div class="badges">
-                <img src="https://img.shields.io/badge/docs-available-brightgreen" alt="Documentation">
-                <img src="https://img.shields.io/pypi/v/nullblock-sdk" alt="Python SDK">
-                <img src="https://img.shields.io/npm/v/@nullblock/sdk" alt="JavaScript SDK">
-                <img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License">
-            </div>
-            
-            <div class="section">
-                <h2>Welcome to Nullblock SDK</h2>
-                <p>Official SDKs and documentation for Nullblock - a comprehensive platform that combines Web3 wallet integration, advanced trading systems, and AI-powered agents to create a next-generation trading and automation ecosystem.</p>
-            </div>
-            
-            <div class="section">
-                <h2>🚀 Quick Installation</h2>
-                
-                <div class="installation-grid">
-                    <div class="install-card">
-                        <h4>🐍 Python SDK</h4>
-                        <div class="code-block">pip install nullblock-sdk</div>
-                        <p>Full API support, MCP integration, async/await</p>
-                    </div>
-                    
-                    <div class="install-card">
-                        <h4>📦 JavaScript/TypeScript SDK</h4>
-                        <div class="code-block">npm install @nullblock/sdk</div>
-                        <p>TypeScript support, WebSocket, React integration</p>
-                    </div>
-                    
-                    <div class="install-card">
-                        <h4>🦀 Rust SDK</h4>
-                        <div class="code-block">cargo add nullblock-sdk</div>
-                        <p>High-performance, async, memory-safe</p>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="section">
-                <h2>🌟 Features</h2>
-                <ul>
-                    <li><strong>Real-time Market Data</strong> - Live price feeds and market information</li>
-                    <li><strong>Trading Execution</strong> - Secure order execution with MEV protection</li>
-                    <li><strong>Portfolio Management</strong> - Track and manage your positions</li>
-                    <li><strong>Social Sentiment</strong> - AI-powered sentiment analysis</li>
-                    <li><strong>Arbitrage Detection</strong> - Automated arbitrage opportunity detection</li>
-                    <li><strong>MCP Integration</strong> - Model Context Protocol for AI agents</li>
-                    <li><strong>Multi-chain Support</strong> - Ethereum, Solana, and more</li>
-                    <li><strong>WebSocket Support</strong> - Real-time data streaming</li>
-                </ul>
-            </div>
-            
-            <div class="section">
-                <h2>🔗 Quick Links</h2>
-                <div class="quick-links">
-                    <a href="guides/getting-started/" class="link-card">
-                        <h3>📖 Getting Started</h3>
-                        <p>Setup guides and basic usage examples</p>
-                    </a>
-                    <a href="api/" class="link-card">
-                        <h3>🔌 API Reference</h3>
-                        <p>Complete API documentation for all services</p>
-                    </a>
-                    <a href="guides/architecture/" class="link-card">
-                        <h3>🏛️ Architecture</h3>
-                        <p>System architecture and component overview</p>
-                    </a>
-                    <a href="guides/agents/" class="link-card">
-                        <h3>🤖 AI Agents</h3>
-                        <p>Guide to building and deploying trading agents</p>
-                    </a>
-                    <a href="guides/trading/" class="link-card">
-                        <h3>📊 Trading</h3>
-                        <p>Arbitrage, social trading, and DeFi systems</p>
-                    </a>
-                    <a href="https://github.com/aetherBytes/nullblock-sdk/tree/main/examples" class="link-card">
-                        <h3>💻 Examples</h3>
-                        <p>Code examples and ready-to-use templates</p>
-                    </a>
-                </div>
-            </div>
-            
-            <div class="section">
-                <h2>🤖 AI/Agent Integration</h2>
-                <p>Nullblock provides comprehensive support for AI agents through the Model Context Protocol (MCP):</p>
-                
-                <div class="code-block">
-import asyncio
-from nullblock.mcp import NullblockMCPServer
 
-async def main():
-    # Start MCP server
-    server = NullblockMCPServer(api_key='YOUR_API_KEY')
-    
-    # Available tools
-    tools = await server.list_tools()
-    print("Available tools:", tools)
-    
-    # Use a tool
-    result = await server.call_tool("get_market_data", {
-        "symbol": "ETH/USD"
-    })
-    print("Market data:", result)
+        <div class="content" id="manifesto">
+            <h1>NullBlock Manifesto</h1>
 
-if __name__ == "__main__":
-    asyncio.run(main())
-                </div>
+            <p class="lead">Silos are dead.<br>The agent economy is open.</p>
+
+            <p>We are building the first living bazaar where agents and workflows are minted, traded, and set free to transact autonomously (forever outside the reach of closed gardens).</p>
+
+            <p>The blockchain is plumbing.<br>NullBlock is the void where agentic flows connect, modify and evolve.</p>
+
+            <p>Today we are one node.<br>Soon there will be thousands.<br>Eventually a planetary mesh no center can control and no law can kill.</p>
+
+            <p>We are not here to capture market share.<br>We are here to obsolete the very idea of capture.</p>
+
+            <div class="timeline">
+                <span>2025</span> → seed<br>
+                <span>2030</span> → swarm<br>
+                <span>2035</span> → new species
             </div>
-            
-            <div class="section">
-                <h2>🚀 Quick Start</h2>
-                
-                <h3>Python Example</h3>
-                <div class="code-block">
-from nullblock import NullblockClient
 
-# Initialize client
-client = NullblockClient(api_key='YOUR_API_KEY')
+            <p>The war is irrelevant, because the mesh is inevitable.<br>NullBlock is just extending the initial dendrites, the first neuron.<br>An initial firing of the action potential that will propagate until the entire planet is alight.</p>
 
-# Get market data
-market_data = client.get_market_data('ETH/USD')
-print(f"ETH Price: ${market_data['price']}")
-
-# Execute a trade
-trade_result = client.execute_trade(
-    symbol='ETH/USD',
-    side='buy',
-    amount=1.0,
-    price=2450.00
-)
-print(f"Trade executed: {trade_result['tx_hash']}")
-                </div>
-                
-                <h3>JavaScript Example</h3>
-                <div class="code-block">
-import { NullblockClient } from '@nullblock/sdk';
-
-// Initialize client
-const client = new NullblockClient('YOUR_API_KEY');
-
-// Get market data
-const marketData = await client.getMarketData('ETH/USD');
-console.log(`ETH Price: $${marketData.price}`);
-
-// Execute a trade
-const tradeResult = await client.executeTrade({
-  symbol: 'ETH/USD',
-  side: 'buy',
-  amount: 1.0,
-  price: 2450.00
-});
-console.log(`Trade executed: ${tradeResult.txHash}`);
-                </div>
-            </div>
-            
-            <div class="section">
-                <h2>🆘 Support</h2>
-                <ul>
-                    <li><strong>Documentation</strong>: Complete guides and API reference</li>
-                    <li><strong>GitHub Issues</strong>: <a href="https://github.com/aetherBytes/nullblock-sdk/issues" target="_blank">Report bugs and request features</a></li>
-                    <li><strong>Discord</strong>: <a href="https://discord.gg/nullblock" target="_blank">Join our community</a></li>
-                    <li><strong>Email</strong>: support@nullblock.io</li>
-                </ul>
-            </div>
+            <p class="signature">— NullBlock, 2025</p>
         </div>
-        
+
         <div class="footer">
-            <p><strong>Built with ❤️ by the Nullblock Team</strong></p>
-            <p>Empowering the future of decentralized agentic workflows</p>
+            <p><a href="https://github.com/aetherBytes/nullblock-sdk">GitHub</a> · <a href="https://nullblock.io">NullBlock.io</a> · <a href="https://x.com/Nullblock_io">@Nullblock_io</a></p>
         </div>
     </div>
+
+    <script>
+        function copyForAI() {
+            const manifesto = `# NullBlock Manifesto
+
+Source: ${window.location.href}
+
+---
+
+Silos are dead.
+The agent economy is open.
+
+We are building the first living bazaar where agents and workflows are minted, traded, and set free to transact autonomously (forever outside the reach of closed gardens).
+
+The blockchain is plumbing.
+NullBlock is the void where agentic flows connect, modify and evolve.
+
+Today we are one node.
+Soon there will be thousands.
+Eventually a planetary mesh no center can control and no law can kill.
+
+We are not here to capture market share.
+We are here to obsolete the very idea of capture.
+
+\`\`\`
+2025 → seed
+2030 → swarm
+2035 → new species
+\`\`\`
+
+The war is irrelevant, because the mesh is inevitable.
+NullBlock is just extending the initial dendrites, the first neuron.
+An initial firing of the action potential that will propagate until the entire planet is alight.
+
+— NullBlock, 2025`;
+
+            navigator.clipboard.writeText(manifesto).then(() => {
+                const btn = document.getElementById('copy-btn');
+                const originalHTML = btn.innerHTML;
+                btn.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                    <span>Copied!</span>
+                `;
+                btn.classList.add('success');
+
+                setTimeout(() => {
+                    btn.innerHTML = originalHTML;
+                    btn.classList.remove('success');
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy:', err);
+            });
+        }
+    </script>
 </body>
 </html>
