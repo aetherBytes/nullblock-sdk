@@ -138,6 +138,30 @@
             text-decoration: underline;
         }
 
+        .dev-notice {
+            background: rgba(79, 195, 247, 0.1);
+            border: 1px solid var(--cyan);
+            border-radius: 8px;
+            padding: 1rem 1.5rem;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .dev-notice-icon {
+            font-size: 1.5rem;
+        }
+
+        .dev-notice-text {
+            color: var(--cyan);
+            font-size: 0.95rem;
+        }
+
+        .dev-notice-text strong {
+            color: var(--fg);
+        }
+
         @media (max-width: 768px) {
             .container {
                 padding: 1rem;
@@ -166,6 +190,11 @@
                 </svg>
                 <span>Copy for AI</span>
             </button>
+        </div>
+
+        <div class="dev-notice">
+            <span class="dev-notice-icon">🚧</span>
+            <span class="dev-notice-text"><strong>Developer documentation coming soon.</strong> Full SDK guides, API references, and integration tutorials are in development. Follow <a href="https://x.com/Nullblock_io" style="color: var(--cyan);">@Nullblock_io</a> for updates.</span>
         </div>
 
         <div class="content" id="manifesto">
