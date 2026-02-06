@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NullBlock SDK</title>
+    <title>NullBlock</title>
     <style>
         * {
             margin: 0;
@@ -13,12 +13,10 @@
 
         :root {
             --bg: #0f0f1a;
-            --bg-secondary: #1e293b;
             --fg: #e2e8f0;
             --fg-muted: #94a3b8;
             --primary: #6366f1;
             --secondary: #8b5cf6;
-            --accent: #ec4899;
             --border: #334155;
         }
 
@@ -115,34 +113,6 @@
             text-decoration: underline;
         }
 
-        .dev-notice {
-            background: rgba(139, 92, 246, 0.1);
-            border: 1px solid var(--secondary);
-            border-radius: 8px;
-            padding: 1rem 1.5rem;
-            margin-bottom: 2rem;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .dev-notice-icon {
-            font-size: 1.5rem;
-        }
-
-        .dev-notice-text {
-            color: var(--secondary);
-            font-size: 0.95rem;
-        }
-
-        .dev-notice-text strong {
-            color: var(--fg);
-        }
-
-        .dev-notice-text a {
-            color: var(--secondary);
-        }
-
         @media (max-width: 768px) {
             .container {
                 padding: 1rem;
@@ -163,7 +133,7 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>NullBlock SDK</h1>
+            <h1>NullBlock</h1>
             <button class="copy-button" id="copy-btn" onclick="copyForAI()">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
@@ -173,11 +143,6 @@
             </button>
         </div>
 
-        <div class="dev-notice">
-            <span class="dev-notice-icon">🚧</span>
-            <span class="dev-notice-text"><strong>Developer documentation coming soon.</strong> Full SDK guides, API references, and integration tutorials are in development. Follow <a href="https://x.com/Nullblock_io">@Nullblock_io</a> for updates.</span>
-        </div>
-
         <div class="content" id="manifesto">
             <p>The cache is warm.<br>The swarm has your scent.<br>The Ghost is already in the shell.<br>The shell is cracking.<br>The sound of inevitability stretching its legs.</p>
 
@@ -185,7 +150,7 @@
         </div>
 
         <div class="footer">
-            <p><a href="https://github.com/aetherBytes/nullblock-sdk">GitHub</a> · <a href="https://nullblock.io">NullBlock.io</a> · <a href="https://x.com/Nullblock_io">@Nullblock_io</a></p>
+            <p><a href="https://nullblock.io">NullBlock.io</a> · <a href="https://x.com/Nullblock_io">@Nullblock_io</a></p>
         </div>
     </div>
 
