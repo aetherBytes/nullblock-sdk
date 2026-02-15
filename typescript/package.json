@@ -1,0 +1,16 @@
+{
+  "name": "@nullblock/sdk",
+  "version": "0.1.0",
+  "description": "TypeScript SDK for NullBlock — agents, engrams, MCP tools, and Crossroads",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch"
+  },
+  "keywords": ["nullblock", "agents", "mcp", "engrams", "crossroads", "solana"],
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "^5.3.0"
+  }
+}
