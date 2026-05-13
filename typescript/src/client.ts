@@ -106,7 +106,7 @@ export class NullblockClient {
   // Wire-contract version this SDK was built against. Compare with
   // schemaVersion() on the live server to detect drift.
   readonly schemaVersion: string = NullblockClient.SCHEMA_VERSION;
-  static readonly SCHEMA_VERSION = '1.0.0';
+  static readonly SCHEMA_VERSION = '1.1.0';
 
   /** Fetch the schema version Erebus is currently serving. */
   async serverSchemaVersion(): Promise<{ version: string; title: string; openapi: string }> {

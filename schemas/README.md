@@ -74,41 +74,30 @@ This is the same model as `skills/` — authored in main, mirrored to
 SDK on each release. Both surfaces share the public-contract rule
 defined in CLAUDE.md.
 
-## Coverage today (v1.0.0)
+## Coverage today (v1.1.0)
 
-Meta:
-- `GET /health`
-- `GET /api/info`
-- `GET /llms.txt`
-- `GET /api/schema`
-- `GET /api/schema/version`
-
-Skills (agentskills.io):
-- `GET /api/skills`
-- `GET /api/skills/{name}`
-- `GET /api/skills/{name}/SKILL.md`
-- `GET /api/skills/{name}/{path}`
+| Resource | Paths | Status |
+|----------|-------|--------|
+| Meta | `/health`, `/api/info`, `/llms.txt`, `/api/schema`, `/api/schema/version` | ✅ |
+| Skills | `/api/skills`, `/api/skills/{name}`, `/api/skills/{name}/SKILL.md`, `/api/skills/{name}/{path}` | ✅ |
+| Wallets | `/api/wallets`, `/api/wallets/detect`, `/api/wallets/challenge`, `/api/wallets/verify`, `/api/wallets/status` | ✅ |
+| Auth | `/api/auth/email/{register,login,verify,resend-verification}`, `/api/auth/google/{start,callback}`, `/api/auth/{token,refresh}` | ✅ |
+| Agents | `/api/agents/health`, `/api/agents/hecate/{chat,chat/public,chat/stream,chat/stream/public,status,tools,history,clear,model-info,available-models}` | ✅ |
+| Engrams | `/api/engrams/health`, `/api/engrams` (GET/POST), `/api/engrams/search`, `/api/engrams/{id}` (GET/PUT/DELETE), `/api/engrams/{id}/{fork,publish}`, `/api/engrams/wallet/{wallet}` (+`/{key}`) | ✅ |
+| MCP | `/mcp/health`, `/mcp/tools`, `/mcp/jsonrpc` | ✅ |
+| Marketplace | `/api/marketplace/{listings,listings/:id,search,featured,stats,registry,registry/:provider/:id,registry/stats,skills.md}` | ✅ |
+| Discovery | `/api/discovery/{tools,agents,protocols,all,hot}` | ✅ |
 
 ## Coverage roadmap
 
-Each major resource on Erebus needs to land in this spec before its
-SDK client classes can be considered "in the contract." Tracking:
-
-| Resource | In schema? | SDK client? |
-|----------|------------|-------------|
-| Meta (health, info, llms.txt, schema) | ✅ | partial |
-| Skills | ✅ | ✅ TS + Python |
-| Agents (chat, models, tools) | ⏳ | ✅ existing, types not yet schema-anchored |
-| Engrams (memory CRUD) | ⏳ | ✅ existing |
-| MCP (tool list/call, JSON-RPC) | ⏳ | ✅ existing |
-| Marketplace (Crossroads listings + registry) | ⏳ | ✅ existing |
-| Wallets (challenge/verify) | ⏳ | ✅ existing |
-| Email + Google auth | ⏳ | ⏳ |
-| Sessions | ⏳ | ⏳ |
-| Streaming chat (SSE) | ⏳ | ⏳ |
-| Content (post generation) | ⏳ | ⏳ |
-| LLM proxy (OpenAI-compatible) | ⏳ | ⏳ |
-| Rokha (catalog) | ⏳ | ⏳ |
+| Resource | In schema? | SDK client? | Priority |
+|----------|------------|-------------|----------|
+| Meta + Skills + Wallets + Auth + Agents + Engrams + MCP + Marketplace + Discovery | ✅ (v1.1.0) | ✅ existing | done |
+| Sessions (`/api/agents/:name/sessions/*`) | ⏳ | partial | next minor |
+| Streaming chat per-event schema (currently shape is doc-only) | ⏳ | partial | next minor |
+| Content (`/api/content/*`) | ⏳ | ⏳ | when content surface stabilizes |
+| LLM proxy (`/api/v1/chat/completions`, OpenAI-compatible) | ⏳ | ✅ existing | when shape audited |
+| Rokha catalog (`/api/rokha/*`) | ⏳ | ⏳ | when Rokha catalog API stabilizes |
 
 Adding a resource = add paths + components in `openapi.yaml`, bump
 minor version, mirror to SDK, update CHANGELOG.

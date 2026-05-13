@@ -6,6 +6,32 @@ The SDK and the NullBlock wire contract (`schemas/openapi.yaml`) are
 versioned independently. SDK version tracks client-code changes;
 schema version tracks the wire contract. See `schemas/README.md`.
 
+## 0.2.2 — 2026-05-13
+
+Schema **v1.1.0** — basic NullBlock functionality is now in the wire
+contract. Existing SDK clients are unchanged; what's new is the
+explicit, versioned shape they're claiming to call.
+
+### Schema additions (1.0.0 → 1.1.0, minor — additive)
+
+- **Wallets** — `/api/wallets`, `/api/wallets/detect`, `/api/wallets/challenge`, `/api/wallets/verify`, `/api/wallets/status`. Components: `WalletChallengeRequest/Response`, `WalletVerifyRequest/Response`, `WalletListResponse`.
+- **Auth** — `/api/auth/email/{register,login,verify,resend-verification}`, `/api/auth/google/{start,callback}`, `/api/auth/{token,refresh}`. Components: `EmailRegisterRequest`, `EmailLoginRequest`, `EmailVerifyRequest`, `AuthSuccessResponse`.
+- **Agents** — chat (non-stream + stream, public + signed), status, tools, history, clear, model-info, available-models. Components: `AgentChatRequest`, `AgentChatResponse`, `AgentStatus`, `ModelInfo`.
+- **Engrams** — full CRUD + search + fork + publish + wallet-scoped lookups. Components: `Engram`, `EngramCreateRequest`, `EngramUpdateRequest`, `EngramSearchRequest`, `EngramEnvelope`, `EngramsListResponse`, `EngramType` enum, `SearchMode` enum.
+- **MCP** — `/mcp/health`, `/mcp/tools`, `/mcp/jsonrpc`. Components: `MCPTool`, `MCPJsonRpcRequest`, `MCPJsonRpcResponse`.
+- **Marketplace** — listings, search, featured, stats, registry (paged + per-listing detail + stats), markdown skills catalog. Components: `MarketplaceListing`, `MarketplaceSearchRequest`, `RegistryListing`, `RegistryListResponse`.
+- **Discovery** — `/api/discovery/{tools,agents,protocols,all,hot}`.
+- **Security scheme** — `bearerAuth` (JWT) wired into endpoints that require it.
+
+### Changed
+- `NullblockClient.SCHEMA_VERSION` (TS + Python) bumped to `"1.1.0"`.
+- Coverage matrix in `schemas/README.md` updated.
+
+### Same wire shape, more contract
+- No SDK client methods were added or changed in this release. The
+  existing `nb.agents.*`, `nb.engrams.*`, `nb.wallets.*`, `nb.mcp.*`,
+  `nb.marketplace.*` methods now have schema-anchored docs.
+
 ## 0.2.1 — 2026-05-13
 
 Wire contract is now an explicit, versioned schema layer.

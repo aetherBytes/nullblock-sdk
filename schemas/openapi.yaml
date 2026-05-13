@@ -17,7 +17,7 @@ info:
 
     The full operational rule lives in the main repo's `CLAUDE.md` under
     "Public Surface Contract".
-  version: 1.0.0
+  version: 1.1.0
   license:
     name: MIT
     url: https://github.com/aetherBytes/nullblock-sdk/blob/main/LICENSE
@@ -36,8 +36,28 @@ tags:
     description: Server metadata — health, info, schema, friendly LLM index
   - name: skills
     description: First-party agentskills.io skills (CORS-open, no auth)
+  - name: wallets
+    description: Web3 wallet challenge/verify auth (Solana, Ethereum)
+  - name: auth
+    description: Email + Google OAuth + JWT issue/refresh
+  - name: agents
+    description: Hex chat, models, tools, history (public + signed variants)
+  - name: engrams
+    description: Wallet-scoped memory/context CRUD with search (JWT + wallet sig)
+  - name: mcp
+    description: Model Context Protocol — tool discovery and invocation
+  - name: marketplace
+    description: Crossroads listings + third-party tool registry (ClawHub, Smithery)
+  - name: discovery
+    description: Live discovery of running tools, agents, protocols
+
+security: []  # default: no auth. Routes that need it set their own.
 
 paths:
+  # ============================================================
+  # Meta
+  # ============================================================
+
   /health:
     get:
       tags: [meta]
@@ -73,9 +93,6 @@ paths:
     get:
       tags: [meta]
       summary: Friendly LLM-readable index
-      description: |
-        Plain-text index of the discoverable surface, formatted for LLMs
-        crawling the API. Conforms loosely to the emerging llms.txt convention.
       operationId: getLlmsTxt
       responses:
         '200':
@@ -89,9 +106,6 @@ paths:
     get:
       tags: [meta]
       summary: This OpenAPI specification (live)
-      description: |
-        Returns the OpenAPI 3.1 schema Erebus is serving against. Clients
-        can hash this and compare against their embedded copy to detect drift.
       operationId: getSchema
       responses:
         '200':
@@ -100,18 +114,11 @@ paths:
             application/yaml:
               schema:
                 type: string
-            text/yaml:
-              schema:
-                type: string
 
   /api/schema/version:
     get:
       tags: [meta]
       summary: Schema version (just the semver string + metadata)
-      description: |
-        Lightweight endpoint for SDKs to check version compatibility on
-        startup or before requests. Compare against the SDK's embedded
-        schema version; warn or refuse on mismatch.
       operationId: getSchemaVersion
       responses:
         '200':
@@ -121,16 +128,14 @@ paths:
               schema:
                 $ref: '#/components/schemas/SchemaVersion'
 
+  # ============================================================
+  # Skills (agentskills.io)
+  # ============================================================
+
   /api/skills:
     get:
       tags: [skills]
       summary: List first-party NullBlock skills
-      description: |
-        Discovery endpoint for skills authored by NullBlock against the
-        [agentskills.io](https://agentskills.io) standard. Returns parsed
-        SKILL.md frontmatter and install hints for major agents.
-
-        CORS-open, no auth required.
       operationId: listSkills
       responses:
         '200':
@@ -144,10 +149,6 @@ paths:
     get:
       tags: [skills]
       summary: Full manifest for one skill
-      description: |
-        Frontmatter, complete file list, body size, and install hints for
-        a single skill. The file list can be used to fetch each bundled
-        resource individually via `/api/skills/{name}/{path}`.
       operationId: getSkill
       parameters:
         - $ref: '#/components/parameters/SkillName'
@@ -167,10 +168,6 @@ paths:
     get:
       tags: [skills]
       summary: Raw SKILL.md content
-      description: |
-        Returns the raw markdown so a consuming agent can write it
-        directly to its skills directory. Frontmatter is preserved exactly
-        as authored.
       operationId: getSkillMd
       parameters:
         - $ref: '#/components/parameters/SkillName'
@@ -188,20 +185,12 @@ paths:
     get:
       tags: [skills]
       summary: Bundled file from a skill folder
-      description: |
-        Fetches files like `references/foo.md`, `scripts/probe.sh`, or
-        `assets/template.json`. Path traversal (`..`) and absolute paths
-        are rejected with 400.
-
-        Content-type is inferred by extension; binary files come back as
-        `application/octet-stream`.
       operationId: getSkillFile
       parameters:
         - $ref: '#/components/parameters/SkillName'
         - name: path
           in: path
           required: true
-          description: Relative path inside the skill folder
           schema:
             type: string
             pattern: ^[A-Za-z0-9._/-]+$
@@ -211,44 +200,941 @@ paths:
           description: File content
           content:
             text/markdown:
-              schema:
-                type: string
+              schema: { type: string }
             text/x-shellscript:
-              schema:
-                type: string
+              schema: { type: string }
             text/x-python:
-              schema:
-                type: string
+              schema: { type: string }
             application/javascript:
-              schema:
-                type: string
+              schema: { type: string }
             application/json:
-              schema:
-                type: object
+              schema: { type: object }
             application/octet-stream:
-              schema:
-                type: string
-                format: binary
+              schema: { type: string, format: binary }
         '400':
           $ref: '#/components/responses/BadRequest'
         '403':
-          description: Path escapes the skill root (e.g. `../etc/passwd`)
-          content:
-            text/plain:
-              schema:
-                type: string
+          description: Path escapes the skill root
         '404':
           $ref: '#/components/responses/NotFound'
 
+  # ============================================================
+  # Wallets — Web3 challenge/verify auth
+  # ============================================================
+
+  /api/wallets:
+    get:
+      tags: [wallets]
+      summary: List supported wallet types
+      operationId: listSupportedWallets
+      responses:
+        '200':
+          description: Supported wallet types per chain
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WalletListResponse'
+
+  /api/wallets/detect:
+    post:
+      tags: [wallets]
+      summary: Detect wallets installed in the user's browser
+      description: |
+        Reads the user-agent's wallet provider injections (window.ethereum,
+        window.solana, etc.) — practically a hint for frontends; safe to
+        skip for non-browser SDKs.
+      operationId: detectWallets
+      responses:
+        '200':
+          description: Detection result
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+
+  /api/wallets/challenge:
+    post:
+      tags: [wallets]
+      summary: Create a wallet signing challenge
+      operationId: createWalletChallenge
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WalletChallengeRequest'
+      responses:
+        '200':
+          description: Challenge created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WalletChallengeResponse'
+
+  /api/wallets/verify:
+    post:
+      tags: [wallets]
+      summary: Verify a signed challenge and issue a session
+      operationId: verifyWalletSignature
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WalletVerifyRequest'
+      responses:
+        '200':
+          description: Verified — JWT + session info
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WalletVerifyResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /api/wallets/status:
+    get:
+      tags: [wallets]
+      summary: Wallet auth status for the current session
+      operationId: getWalletStatus
+      responses:
+        '200':
+          description: Status
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+
+  # ============================================================
+  # Auth — email + Google OAuth + JWT
+  # ============================================================
+
+  /api/auth/email/register:
+    post:
+      tags: [auth]
+      summary: Register a new email account
+      description: |
+        Creates a user via email + password. Returns a JWT immediately
+        (account is usable). Also returns a `verification_token` — in dev,
+        you can POST it directly to `/api/auth/email/verify`; in prod it's
+        emailed to the user.
+      operationId: emailRegister
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmailRegisterRequest'
+      responses:
+        '200':
+          description: Registered
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthSuccessResponse'
+
+  /api/auth/email/login:
+    post:
+      tags: [auth]
+      summary: Log in with email + password
+      operationId: emailLogin
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmailLoginRequest'
+      responses:
+        '200':
+          description: Logged in
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthSuccessResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          description: Too many failed attempts — account temporarily locked
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/auth/email/verify:
+    post:
+      tags: [auth]
+      summary: Verify an email address
+      operationId: emailVerify
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmailVerifyRequest'
+      responses:
+        '200':
+          description: Verified
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  message: { type: string }
+
+  /api/auth/email/resend-verification:
+    post:
+      tags: [auth]
+      summary: Resend the email verification token
+      operationId: emailResendVerification
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email: { type: string, format: email }
+              required: [email]
+      responses:
+        '200':
+          description: New verification sent (or silently no-op if already verified)
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+
+  /api/auth/google/start:
+    post:
+      tags: [auth]
+      summary: Begin Google OAuth flow
+      description: Returns the URL the client should redirect to.
+      operationId: googleAuthStart
+      responses:
+        '200':
+          description: OAuth start URL
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  redirect_url: { type: string, format: uri }
+                  state: { type: string }
+
+  /api/auth/google/callback:
+    get:
+      tags: [auth]
+      summary: Google OAuth callback
+      operationId: googleAuthCallback
+      parameters:
+        - { name: code, in: query, required: true, schema: { type: string } }
+        - { name: state, in: query, required: true, schema: { type: string } }
+      responses:
+        '200':
+          description: Authenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthSuccessResponse'
+
+  /api/auth/token:
+    post:
+      tags: [auth]
+      summary: Issue a JWT for an existing identity
+      operationId: authIssueToken
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        '200':
+          description: Token issued
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthSuccessResponse'
+
+  /api/auth/refresh:
+    post:
+      tags: [auth]
+      summary: Refresh an expiring JWT
+      operationId: authRefresh
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Refreshed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthSuccessResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  # ============================================================
+  # Agents — Hex chat + models + tools
+  # ============================================================
+
+  /api/agents/health:
+    get:
+      tags: [agents]
+      summary: Agent service health
+      operationId: agentsHealth
+      responses:
+        '200':
+          description: Healthy
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthResponse'
+
+  /api/agents/hecate/chat:
+    post:
+      tags: [agents]
+      summary: Chat with Hex (authenticated)
+      description: |
+        Standard non-streaming chat. JWT is required for paid-tier features;
+        without it, the request is treated as pre-login free-tier.
+      operationId: agentChat
+      security:
+        - bearerAuth: []
+        - {}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AgentChatRequest'
+      responses:
+        '200':
+          description: Chat response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AgentChatResponse'
+
+  /api/agents/hecate/chat/public:
+    post:
+      tags: [agents]
+      summary: Chat with Hex (no auth — pre-login)
+      operationId: agentChatPublic
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AgentChatRequest'
+      responses:
+        '200':
+          description: Chat response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AgentChatResponse'
+
+  /api/agents/hecate/chat/stream:
+    post:
+      tags: [agents]
+      summary: Streaming chat with Hex (SSE)
+      description: |
+        Server-sent events. Event types: `content`, `thinking`, `tool_start`,
+        `tool_result`, `done`. Current MVP buffers the full response and
+        emits one `content` event followed by `done`; real per-token
+        streaming is planned.
+      operationId: agentChatStream
+      security:
+        - bearerAuth: []
+        - {}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AgentChatRequest'
+      responses:
+        '200':
+          description: SSE stream
+          content:
+            text/event-stream:
+              schema:
+                type: string
+                description: |
+                  Lines alternate `event: <type>` and `data: <json>`,
+                  with blank lines as event separators.
+
+  /api/agents/hecate/chat/stream/public:
+    post:
+      tags: [agents]
+      summary: Streaming chat (no auth)
+      operationId: agentChatStreamPublic
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AgentChatRequest'
+      responses:
+        '200':
+          description: SSE stream
+          content:
+            text/event-stream:
+              schema: { type: string }
+
+  /api/agents/hecate/status:
+    get:
+      tags: [agents]
+      summary: Hex agent status
+      operationId: agentStatus
+      responses:
+        '200':
+          description: Status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AgentStatus'
+
+  /api/agents/hecate/tools:
+    get:
+      tags: [agents]
+      summary: Tools currently bound to Hex
+      operationId: agentTools
+      responses:
+        '200':
+          description: Tool list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MCPTool'
+
+  /api/agents/hecate/history:
+    get:
+      tags: [agents]
+      summary: Recent conversation history for Hex
+      operationId: agentHistory
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: History
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  additionalProperties: true
+
+  /api/agents/hecate/clear:
+    post:
+      tags: [agents]
+      summary: Clear Hex's conversation history for the caller
+      operationId: agentClearHistory
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Cleared
+
+  /api/agents/hecate/model-info:
+    get:
+      tags: [agents]
+      summary: Hex's current model
+      operationId: agentModelInfo
+      responses:
+        '200':
+          description: Model info
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ModelInfo'
+
+  /api/agents/hecate/available-models:
+    get:
+      tags: [agents]
+      summary: Models available to Hex
+      operationId: agentAvailableModels
+      responses:
+        '200':
+          description: Model list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ModelInfo'
+
+  # ============================================================
+  # Engrams — wallet-scoped memory layer
+  # ============================================================
+
+  /api/engrams/health:
+    get:
+      tags: [engrams]
+      summary: Engrams service health
+      operationId: engramsHealth
+      responses:
+        '200':
+          description: Healthy
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthResponse'
+
+  /api/engrams:
+    get:
+      tags: [engrams]
+      summary: List engrams (with optional filters via query string)
+      operationId: listEngrams
+      security:
+        - bearerAuth: []
+      parameters:
+        - { name: wallet_address, in: query, schema: { type: string } }
+        - { name: engram_type, in: query, schema: { $ref: '#/components/schemas/EngramType' } }
+        - { name: tags, in: query, schema: { type: string }, description: 'Comma-separated' }
+        - { name: limit, in: query, schema: { type: integer, minimum: 1, maximum: 500 } }
+      responses:
+        '200':
+          description: Engram list (wrapped in `{data, ...}` envelope)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EngramsListResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+    post:
+      tags: [engrams]
+      summary: Create an engram
+      operationId: createEngram
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EngramCreateRequest'
+      responses:
+        '200':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EngramEnvelope'
+
+  /api/engrams/search:
+    post:
+      tags: [engrams]
+      summary: Search engrams (keyword, fuzzy, or semantic)
+      operationId: searchEngrams
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EngramSearchRequest'
+      responses:
+        '200':
+          description: Results
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EngramsListResponse'
+
+  /api/engrams/{id}:
+    parameters:
+      - { name: id, in: path, required: true, schema: { type: string, format: uuid } }
+    get:
+      tags: [engrams]
+      summary: Get one engram by ID
+      operationId: getEngram
+      security: [{ bearerAuth: [] }]
+      responses:
+        '200':
+          description: Engram
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/EngramEnvelope' }
+        '404':
+          $ref: '#/components/responses/NotFound'
+    put:
+      tags: [engrams]
+      summary: Update an engram
+      operationId: updateEngram
+      security: [{ bearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/EngramUpdateRequest' }
+      responses:
+        '200':
+          description: Updated
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/EngramEnvelope' }
+    delete:
+      tags: [engrams]
+      summary: Delete an engram
+      operationId: deleteEngram
+      security: [{ bearerAuth: [] }]
+      responses:
+        '204':
+          description: Deleted
+
+  /api/engrams/{id}/fork:
+    post:
+      tags: [engrams]
+      summary: Fork an engram for the calling user
+      operationId: forkEngram
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string, format: uuid } }
+      responses:
+        '200':
+          description: Forked
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/EngramEnvelope' }
+
+  /api/engrams/{id}/publish:
+    post:
+      tags: [engrams]
+      summary: Publish an engram (make it discoverable in Crossroads)
+      operationId: publishEngram
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string, format: uuid } }
+      responses:
+        '200':
+          description: Published
+
+  /api/engrams/wallet/{wallet}:
+    get:
+      tags: [engrams]
+      summary: All engrams owned by a wallet
+      operationId: getEngramsByWallet
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - { name: wallet, in: path, required: true, schema: { type: string } }
+      responses:
+        '200':
+          description: List
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/EngramsListResponse' }
+
+  /api/engrams/wallet/{wallet}/{key}:
+    get:
+      tags: [engrams]
+      summary: Get a specific engram by wallet+key
+      operationId: getEngramByKey
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - { name: wallet, in: path, required: true, schema: { type: string } }
+        - { name: key, in: path, required: true, schema: { type: string } }
+      responses:
+        '200':
+          description: Engram
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/EngramEnvelope' }
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  # ============================================================
+  # MCP — Model Context Protocol
+  # ============================================================
+
+  /mcp/health:
+    get:
+      tags: [mcp]
+      summary: MCP protocol service health
+      operationId: mcpHealth
+      responses:
+        '200':
+          description: Healthy
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/HealthResponse' }
+
+  /mcp/tools:
+    get:
+      tags: [mcp]
+      summary: List available MCP tools (convenience, non-JSON-RPC)
+      operationId: mcpListToolsConvenience
+      responses:
+        '200':
+          description: Tool list
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/MCPTool' }
+
+  /mcp/jsonrpc:
+    post:
+      tags: [mcp]
+      summary: MCP JSON-RPC endpoint (full protocol)
+      description: |
+        Implements MCP 2025-11-25. Common methods:
+          - `initialize` — protocol negotiation
+          - `tools/list` — enumerate tools
+          - `tools/call` — invoke a tool with arguments
+
+        Tool execution requires JWT for tier-gated tools; tool listing is
+        public.
+      operationId: mcpJsonRpc
+      security:
+        - bearerAuth: []
+        - {}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/MCPJsonRpcRequest' }
+      responses:
+        '200':
+          description: JSON-RPC response (success or error in envelope)
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/MCPJsonRpcResponse' }
+
+  # ============================================================
+  # Marketplace — Crossroads listings + Registry
+  # ============================================================
+
+  /api/marketplace/listings:
+    get:
+      tags: [marketplace]
+      summary: Native Crossroads listings
+      operationId: listMarketplaceListings
+      responses:
+        '200':
+          description: Listings
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/MarketplaceListing' }
+
+  /api/marketplace/listings/{id}:
+    get:
+      tags: [marketplace]
+      summary: Get a single listing
+      operationId: getMarketplaceListing
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string } }
+      responses:
+        '200':
+          description: Listing
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/MarketplaceListing' }
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /api/marketplace/search:
+    post:
+      tags: [marketplace]
+      summary: Search listings
+      operationId: searchMarketplace
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/MarketplaceSearchRequest' }
+      responses:
+        '200':
+          description: Search results
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/MarketplaceListing' }
+
+  /api/marketplace/featured:
+    get:
+      tags: [marketplace]
+      summary: Featured listings
+      operationId: featuredMarketplace
+      responses:
+        '200':
+          description: Featured
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/MarketplaceListing' }
+
+  /api/marketplace/stats:
+    get:
+      tags: [marketplace]
+      summary: Marketplace stats
+      operationId: marketplaceStats
+      responses:
+        '200':
+          description: Stats
+          content:
+            application/json:
+              schema: { type: object, additionalProperties: true }
+
+  /api/marketplace/registry:
+    get:
+      tags: [marketplace]
+      summary: Third-party registry index (ClawHub, Smithery, etc.)
+      operationId: getRegistry
+      parameters:
+        - { name: search, in: query, schema: { type: string } }
+        - { name: provider, in: query, schema: { type: string }, description: 'Filter by source (clawhub, smithery, smithery_skills, ...)' }
+        - { name: listing_type, in: query, schema: { type: string, enum: [skill, server, agent] } }
+        - { name: tag, in: query, schema: { type: string } }
+        - { name: sort, in: query, schema: { type: string, enum: [downloads, stars, recent] } }
+        - { name: limit, in: query, schema: { type: integer, minimum: 1, maximum: 500, default: 50 } }
+        - { name: offset, in: query, schema: { type: integer, minimum: 0 } }
+      responses:
+        '200':
+          description: Paged registry index
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/RegistryListResponse' }
+
+  /api/marketplace/registry/{provider}/{id}:
+    get:
+      tags: [marketplace]
+      summary: Get one registry listing
+      operationId: getRegistryListing
+      parameters:
+        - { name: provider, in: path, required: true, schema: { type: string } }
+        - { name: id, in: path, required: true, schema: { type: string } }
+      responses:
+        '200':
+          description: Listing
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/RegistryListing' }
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /api/marketplace/registry/stats:
+    get:
+      tags: [marketplace]
+      summary: Per-provider listing counts
+      operationId: registryStats
+      responses:
+        '200':
+          description: Stats
+          content:
+            application/json:
+              schema: { type: object, additionalProperties: true }
+
+  /api/marketplace/skills.md:
+    get:
+      tags: [marketplace]
+      summary: Browsable third-party skills catalog (markdown)
+      operationId: marketplaceSkillsMd
+      responses:
+        '200':
+          description: Markdown
+          content:
+            text/markdown:
+              schema: { type: string }
+
+  # ============================================================
+  # Discovery
+  # ============================================================
+
+  /api/discovery/tools:
+    get:
+      tags: [discovery]
+      summary: Live MCP tool inventory
+      operationId: discoverTools
+      responses:
+        '200':
+          description: Tools currently available
+          content:
+            application/json:
+              schema: { type: object, additionalProperties: true }
+
+  /api/discovery/agents:
+    get:
+      tags: [discovery]
+      summary: Running agents
+      operationId: discoverAgents
+      responses:
+        '200':
+          description: Agents
+          content:
+            application/json:
+              schema: { type: object, additionalProperties: true }
+
+  /api/discovery/protocols:
+    get:
+      tags: [discovery]
+      summary: Active protocols (MCP, A2A, etc.)
+      operationId: discoverProtocols
+      responses:
+        '200':
+          description: Protocols
+          content:
+            application/json:
+              schema: { type: object, additionalProperties: true }
+
+  /api/discovery/all:
+    get:
+      tags: [discovery]
+      summary: All of the above in one call
+      operationId: discoverAll
+      responses:
+        '200':
+          description: Aggregate
+          content:
+            application/json:
+              schema: { type: object, additionalProperties: true }
+
+  /api/discovery/hot:
+    get:
+      tags: [discovery]
+      summary: Hot/trending items (downloads + recent activity)
+      operationId: discoverHot
+      responses:
+        '200':
+          description: Hot list
+          content:
+            application/json:
+              schema: { type: object, additionalProperties: true }
+
+# ================================================================
+# Components
+# ================================================================
+
 components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: |
+        JWT issued by `/api/auth/email/login`, `/api/auth/google/callback`,
+        `/api/wallets/verify`, or `/api/auth/token`. Send as
+        `Authorization: Bearer <token>`. Refresh via `/api/auth/refresh`
+        before expiry (24h default).
+
   parameters:
     SkillName:
       name: name
       in: path
       required: true
-      description: |
-        Skill directory name. Must match the `name` field in the skill's
-        SKILL.md frontmatter (agentskills.io rule).
       schema:
         type: string
         minLength: 1
@@ -257,87 +1143,59 @@ components:
 
   responses:
     BadRequest:
-      description: Invalid input (malformed name, unsafe path, etc.)
+      description: Invalid input
       content:
         application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-        text/plain:
-          schema:
-            type: string
+          schema: { $ref: '#/components/schemas/ErrorResponse' }
     NotFound:
-      description: Skill or file not found
+      description: Not found
       content:
         application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-        text/plain:
-          schema:
-            type: string
+          schema: { $ref: '#/components/schemas/ErrorResponse' }
+    Unauthorized:
+      description: Missing or invalid auth
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/ErrorResponse' }
 
   schemas:
+    # --- Meta ---
+
     HealthResponse:
       type: object
       additionalProperties: true
       properties:
-        status:
-          type: string
-          example: healthy
-        version:
-          type: string
-          description: Erebus version
-          example: 0.1.0
-        uptime:
-          type: integer
-          description: Process uptime in seconds
+        status: { type: string, example: healthy }
+        version: { type: string }
+        uptime: { type: integer }
       required: [status]
 
     SchemaVersion:
       type: object
       properties:
-        version:
-          type: string
-          description: Semver of the served OpenAPI schema
-          example: "1.0.0"
-        title:
-          type: string
-          example: NullBlock Public API
-        openapi:
-          type: string
-          example: "3.1.0"
+        version: { type: string, example: "1.1.0" }
+        title: { type: string }
+        openapi: { type: string, example: "3.1.0" }
       required: [version]
 
     ErrorResponse:
       type: object
       properties:
-        error:
-          type: string
-          description: Machine-readable error code
-          example: skill_not_found
-        message:
-          type: string
-          description: Human-readable detail
-        name:
-          type: string
-          description: Echo of the offending input, when relevant
+        error: { type: string, description: 'Machine-readable error code' }
+        message: { type: string }
+        code: { type: string }
+        name: { type: string }
       required: [error]
+
+    # --- Skills ---
 
     SkillFrontmatterMetadata:
       type: object
-      description: |
-        Free-form metadata authored in the skill's SKILL.md frontmatter.
-        Conventional keys include `author`, `version`, `homepage`, `source_repo`.
-      additionalProperties:
-        type: string
+      additionalProperties: { type: string }
 
     SkillInstallHint:
       type: object
-      description: |
-        Pre-baked install snippets for major agents + canonical fetch URLs.
-        Keys include `claude_code`, `openclaw`, `raw_skill_md`,
-        `github_skill_md`, `github_dir`, `spec`, `note`.
-      additionalProperties:
-        type: string
+      additionalProperties: { type: string }
 
     SkillSummary:
       type: object
@@ -347,29 +1205,12 @@ components:
           minLength: 1
           maxLength: 64
           pattern: ^[a-z0-9]([a-z0-9]|-(?!-))*[a-z0-9]$|^[a-z0-9]$
-          description: Skill identifier (matches the folder name)
-          example: null-audit
-        description:
-          type: string
-          minLength: 1
-          maxLength: 1024
-          description: One-sentence summary used for progressive-disclosure matching
-        license:
-          type: string
-          nullable: true
-        compatibility:
-          type: string
-          maxLength: 500
-          nullable: true
-        metadata:
-          $ref: '#/components/schemas/SkillFrontmatterMetadata'
-          nullable: true
-        skill_md_url:
-          type: string
-          description: Server-relative URL for the raw SKILL.md
-          example: /api/skills/null-audit/SKILL.md
-        install_hint:
-          $ref: '#/components/schemas/SkillInstallHint'
+        description: { type: string, minLength: 1, maxLength: 1024 }
+        license: { type: string, nullable: true }
+        compatibility: { type: string, maxLength: 500, nullable: true }
+        metadata: { $ref: '#/components/schemas/SkillFrontmatterMetadata', nullable: true }
+        skill_md_url: { type: string }
+        install_hint: { $ref: '#/components/schemas/SkillInstallHint' }
       required: [name, description, skill_md_url, install_hint]
 
     SkillManifest:
@@ -379,31 +1220,356 @@ components:
           properties:
             files:
               type: array
-              description: All files in the skill folder, relative to root
-              items:
-                type: string
-              example: ["SKILL.md", "references/audit-engram-schema.md"]
-            body_chars:
-              type: integer
-              description: Length of the SKILL.md body (after frontmatter)
-              minimum: 0
+              items: { type: string }
+            body_chars: { type: integer, minimum: 0 }
           required: [files, body_chars]
 
     SkillsListResponse:
       type: object
       properties:
-        spec:
-          type: string
-          enum: ["agentskills.io"]
-        registry:
-          type: string
-          description: Identifier of which registry this list comes from
-          example: nullblock-first-party
-        count:
-          type: integer
-          minimum: 0
+        spec: { type: string, enum: ["agentskills.io"] }
+        registry: { type: string }
+        count: { type: integer, minimum: 0 }
         skills:
           type: array
-          items:
-            $ref: '#/components/schemas/SkillSummary'
+          items: { $ref: '#/components/schemas/SkillSummary' }
       required: [spec, registry, count, skills]
+
+    # --- Wallets ---
+
+    WalletListResponse:
+      type: object
+      properties:
+        solana:
+          type: array
+          items: { type: string }
+        ethereum:
+          type: array
+          items: { type: string }
+      additionalProperties: true
+
+    WalletChallengeRequest:
+      type: object
+      properties:
+        wallet_address: { type: string }
+        wallet_type: { type: string, description: "phantom, metamask, etc." }
+        chain: { type: string, enum: [solana, ethereum] }
+      required: [wallet_address, wallet_type]
+
+    WalletChallengeResponse:
+      type: object
+      properties:
+        challenge: { type: string }
+        expires_at: { type: string, format: date-time }
+        nonce: { type: string }
+      required: [challenge, expires_at]
+
+    WalletVerifyRequest:
+      type: object
+      properties:
+        wallet_address: { type: string }
+        signature: { type: string }
+        challenge: { type: string }
+        wallet_type: { type: string }
+        chain: { type: string, enum: [solana, ethereum] }
+      required: [wallet_address, signature, challenge, wallet_type]
+
+    WalletVerifyResponse:
+      type: object
+      properties:
+        success: { type: boolean }
+        token: { type: string, description: "JWT" }
+        user_id: { type: string, format: uuid }
+        tier: { type: string, enum: [free, casual, pro] }
+        expires_at: { type: string, format: date-time }
+      required: [success, token]
+
+    # --- Auth ---
+
+    EmailRegisterRequest:
+      type: object
+      properties:
+        email: { type: string, format: email }
+        password: { type: string, minLength: 8 }
+      required: [email, password]
+
+    EmailLoginRequest:
+      type: object
+      properties:
+        email: { type: string, format: email }
+        password: { type: string }
+      required: [email, password]
+
+    EmailVerifyRequest:
+      type: object
+      properties:
+        token: { type: string }
+      required: [token]
+
+    AuthSuccessResponse:
+      type: object
+      properties:
+        success: { type: boolean }
+        token: { type: string, description: "JWT — store in sessionStorage as nb_session" }
+        user_id: { type: string, format: uuid }
+        tier: { type: string, enum: [free, casual, pro] }
+        expires_at: { type: string, format: date-time }
+        email_verified: { type: boolean }
+        verification_token: { type: string, description: "Returned on register; in dev, POST to /api/auth/email/verify" }
+      required: [success, token]
+
+    # --- Agents ---
+
+    AgentChatRequest:
+      type: object
+      properties:
+        message: { type: string }
+        user_context:
+          type: object
+          description: |
+            Optional contextual hints. Common keys: `wallet_address`,
+            `user_id`, `prelogin` (bool), `model_preference`.
+          additionalProperties: true
+      required: [message]
+
+    AgentChatResponse:
+      type: object
+      properties:
+        content: { type: string }
+        model_used: { type: string }
+        latency_ms: { type: number }
+        confidence_score: { type: number }
+        metadata:
+          type: object
+          additionalProperties: true
+      required: [content]
+
+    AgentStatus:
+      type: object
+      additionalProperties: true
+      properties:
+        name: { type: string }
+        status: { type: string }
+        model: { type: string }
+        personality: { type: string }
+
+    ModelInfo:
+      type: object
+      additionalProperties: true
+      properties:
+        id: { type: string }
+        name: { type: string }
+        provider: { type: string }
+        context_length: { type: integer }
+        cost_per_input_token: { type: number }
+        cost_per_output_token: { type: number }
+
+    # --- Engrams ---
+
+    EngramType:
+      type: string
+      enum: [persona, preference, strategy, knowledge, compliance]
+
+    SearchMode:
+      type: string
+      enum: [keyword, fuzzy, semantic]
+
+    Engram:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        wallet_address: { type: string }
+        engram_type: { $ref: '#/components/schemas/EngramType' }
+        key: { type: string }
+        content: { type: string, description: "Often a JSON-encoded string" }
+        tags:
+          type: array
+          items: { type: string }
+        metadata:
+          type: object
+          additionalProperties: true
+          nullable: true
+        is_public: { type: boolean }
+        version: { type: integer }
+        created_at: { type: string, format: date-time }
+        updated_at: { type: string, format: date-time }
+      required: [id, wallet_address, engram_type, key, content]
+
+    EngramCreateRequest:
+      type: object
+      properties:
+        wallet_address: { type: string, description: "Erebus overrides with caller's identity" }
+        engram_type: { $ref: '#/components/schemas/EngramType' }
+        key: { type: string, description: "Unique within (wallet, engram_type)" }
+        content: { type: string }
+        tags:
+          type: array
+          items: { type: string }
+        metadata:
+          type: object
+          additionalProperties: true
+        is_public: { type: boolean, default: false }
+      required: [engram_type, key, content]
+
+    EngramUpdateRequest:
+      type: object
+      properties:
+        content: { type: string }
+        tags:
+          type: array
+          items: { type: string }
+        metadata:
+          type: object
+          additionalProperties: true
+        is_public: { type: boolean }
+
+    EngramSearchRequest:
+      type: object
+      properties:
+        wallet_address: { type: string }
+        engram_type: { $ref: '#/components/schemas/EngramType' }
+        query: { type: string, description: "Required for fuzzy/semantic; optional for tag/type filter" }
+        search_mode: { $ref: '#/components/schemas/SearchMode' }
+        tags:
+          type: array
+          items: { type: string }
+        limit: { type: integer, minimum: 1, maximum: 500, default: 50 }
+        offset: { type: integer, minimum: 0, default: 0 }
+
+    EngramEnvelope:
+      type: object
+      description: Wrapper that Erebus puts around a single engram response
+      properties:
+        data: { $ref: '#/components/schemas/Engram' }
+        success: { type: boolean }
+
+    EngramsListResponse:
+      type: object
+      description: Wrapper used for list + search responses
+      properties:
+        data:
+          type: array
+          items: { $ref: '#/components/schemas/Engram' }
+        success: { type: boolean }
+        total: { type: integer }
+        limit: { type: integer }
+        offset: { type: integer }
+      required: [data]
+
+    # --- MCP ---
+
+    MCPTool:
+      type: object
+      properties:
+        name: { type: string }
+        description: { type: string }
+        inputSchema:
+          type: object
+          additionalProperties: true
+        annotations:
+          type: object
+          properties:
+            readOnlyHint: { type: boolean }
+            destructiveHint: { type: boolean }
+            idempotentHint: { type: boolean }
+            openWorldHint: { type: boolean }
+      required: [name, description]
+
+    MCPJsonRpcRequest:
+      type: object
+      properties:
+        jsonrpc: { type: string, enum: ["2.0"] }
+        id:
+          oneOf:
+            - { type: integer }
+            - { type: string }
+        method: { type: string, example: "tools/call" }
+        params:
+          type: object
+          additionalProperties: true
+      required: [jsonrpc, id, method]
+
+    MCPJsonRpcResponse:
+      type: object
+      properties:
+        jsonrpc: { type: string, enum: ["2.0"] }
+        id:
+          oneOf:
+            - { type: integer }
+            - { type: string }
+        result:
+          type: object
+          description: Present on success
+          additionalProperties: true
+        error:
+          type: object
+          description: Present on failure
+          properties:
+            code: { type: integer }
+            message: { type: string }
+            data: { type: object, additionalProperties: true }
+          required: [code, message]
+      required: [jsonrpc, id]
+
+    # --- Marketplace ---
+
+    MarketplaceListing:
+      type: object
+      properties:
+        id: { type: string }
+        name: { type: string }
+        description: { type: string }
+        listing_type: { type: string, enum: [tool, cow, agent, workflow, skill, server] }
+        creator_wallet: { type: string }
+        status: { type: string, enum: [pending, approved, rejected, featured] }
+        metadata:
+          type: object
+          additionalProperties: true
+        created_at: { type: string, format: date-time }
+      required: [id, name, description]
+
+    MarketplaceSearchRequest:
+      type: object
+      properties:
+        query: { type: string }
+        listing_type: { type: string }
+        tags:
+          type: array
+          items: { type: string }
+        limit: { type: integer, minimum: 1, maximum: 500 }
+        offset: { type: integer, minimum: 0 }
+
+    RegistryListing:
+      type: object
+      additionalProperties: true
+      properties:
+        name: { type: string }
+        description: { type: string }
+        version: { type: string, nullable: true }
+        author: { type: string }
+        homepage: { type: string, nullable: true }
+        downloads: { type: integer }
+        stars: { type: integer }
+        tags:
+          type: array
+          items: { type: string }
+        source: { type: string, enum: [clawhub, smithery, smithery_skills] }
+        listing_type: { type: string, enum: [skill, server] }
+        external_id: { type: string }
+        provider_id: { type: string }
+        external_updated_at: { type: string, format: date-time }
+        metadata:
+          type: object
+          additionalProperties: true
+      required: [name, description, source]
+
+    RegistryListResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items: { $ref: '#/components/schemas/RegistryListing' }
+        total_count: { type: integer }
+        limit: { type: integer }
+        offset: { type: integer }
+      required: [items, total_count]

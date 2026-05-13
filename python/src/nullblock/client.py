@@ -61,7 +61,7 @@ class NullblockClient:
 
     # Wire-contract version this SDK was built against. Compare with
     # server_schema_version() on the live server to detect drift.
-    SCHEMA_VERSION = "1.0.0"
+    SCHEMA_VERSION = "1.1.0"
 
     @property
     def schema_version(self) -> str:
