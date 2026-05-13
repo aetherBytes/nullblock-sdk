@@ -63,17 +63,27 @@ Only run this stage if:
 
 What to do:
 
-- If the tool declares an HTTPS endpoint: POST `tools/list` via NullBlock's
-  `/api/marketplace/mcp-proxy` endpoint. No local install needed.
-- If the tool is npm-distributed (`metadata.install` mentions npm/npx):
-  inside the sandbox, run `npm install --no-save <pkg> && node -e
-  'spawn the server, send tools/list over stdio, kill it'`. See
-  `references/probe-stdio-mcp.md` for the exact recipe.
-- If neither: skip Stage 2 with note "probe skipped — no endpoint or
-  npm install method".
+- **HTTPS endpoint** (registry declares `endpoint: https://…`): POST `tools/list` via NullBlock's `/api/marketplace/mcp-proxy` endpoint. No local install needed.
+- **npm-installable** (registry declares `metadata.install` or `metadata.npm_package`, OR user passes `--npm <pkg>` to override): inside the sandbox, `npm install --no-save <pkg>` then spawn it via `npx -y <pkg>`, send JSON-RPC `initialize` + `tools/list` over stdio, capture the response, kill the process. See `references/probe-stdio-mcp.md` for the exact recipe.
+- **Otherwise**: skip Stage 2 with note "probe skipped — no endpoint or npm install method." Registry items frequently lack explicit install metadata; the `--npm` override lets the user opt in when they know the package name.
 
-Capture: list of exposed tools, their input schemas, any side effects
-observed (network calls, file writes), and probe latency.
+Capture: list of exposed tools, their input schemas, install duration,
+postinstall hook content (if any), and any errors observed (install
+failure, protocol mismatch, timeout). Results are persisted as
+`probe_results` in the engram — see `references/audit-engram-schema.md`.
+
+### CLI invocation patterns
+
+```bash
+# Auto-detect from registry metadata
+nb audit Math-MCP
+
+# Force npm probe with explicit package
+nb audit Math-MCP --npm @smithery-ai/math-mcp
+
+# Show what got saved
+nb audit --config
+```
 
 ## Stage 3 — Persist findings
 
