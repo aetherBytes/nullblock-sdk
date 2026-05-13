@@ -2,6 +2,32 @@
 
 All notable changes to the NullBlock SDK are tracked here.
 
+The SDK and the NullBlock wire contract (`schemas/openapi.yaml`) are
+versioned independently. SDK version tracks client-code changes;
+schema version tracks the wire contract. See `schemas/README.md`.
+
+## 0.2.1 — 2026-05-13
+
+Wire contract is now an explicit, versioned schema layer.
+
+### Added
+
+- **`schemas/openapi.yaml`** — OpenAPI 3.1 spec covering every public
+  Erebus endpoint. Started at **schema v1.0.0**. Mirrors the canonical
+  copy in the (private) main repo.
+- **`schemas/README.md`** — versioning rules, sync model, coverage matrix.
+- **`NullblockClient.schemaVersion`** (TS) / `client.schema_version`
+  (Python) — wire-contract version this SDK was built against.
+- **`nb.serverSchemaVersion()`** / `nb.server_schema_version()` — fetches
+  what Erebus is serving from `GET /api/schema/version`.
+- **`nb.checkSchemaCompat()`** / `nb.check_schema_compat()` —
+  returns `'match' | 'server-newer' | 'sdk-newer' | 'major-mismatch'`
+  so SDK consumers can refuse incompatible servers.
+
+### Changed
+
+- README references `schemas/` and the contract rule.
+
 ## 0.2.0 — 2026-05-13
 
 The first big face-lift. The SDK now reflects NullBlock's actual

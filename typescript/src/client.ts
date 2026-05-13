@@ -102,6 +102,30 @@ export class NullblockClient {
   async health(): Promise<HealthResponse> {
     return this.get('/health');
   }
+
+  // Wire-contract version this SDK was built against. Compare with
+  // schemaVersion() on the live server to detect drift.
+  readonly schemaVersion: string = NullblockClient.SCHEMA_VERSION;
+  static readonly SCHEMA_VERSION = '1.0.0';
+
+  /** Fetch the schema version Erebus is currently serving. */
+  async serverSchemaVersion(): Promise<{ version: string; title: string; openapi: string }> {
+    return this.get('/api/schema/version');
+  }
+
+  /**
+   * Convenience: compare the server's schema version to ours.
+   * Returns 'match', 'server-newer', 'sdk-newer', or 'major-mismatch'.
+   */
+  async checkSchemaCompat(): Promise<'match' | 'server-newer' | 'sdk-newer' | 'major-mismatch'> {
+    const server = await this.serverSchemaVersion();
+    const [sa, sb, sc] = server.version.split('.').map(n => parseInt(n, 10));
+    const [ka, kb, kc] = NullblockClient.SCHEMA_VERSION.split('.').map(n => parseInt(n, 10));
+    if (sa !== ka) return 'major-mismatch';
+    if (sb > kb || (sb === kb && sc > kc)) return 'server-newer';
+    if (sb < kb || (sb === kb && sc < kc)) return 'sdk-newer';
+    return 'match';
+  }
 }
 
 export class NullblockError extends Error {

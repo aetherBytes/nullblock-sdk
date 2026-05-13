@@ -59,6 +59,33 @@ class NullblockClient:
     def health(self) -> dict[str, Any]:
         return self.get("/health")
 
+    # Wire-contract version this SDK was built against. Compare with
+    # server_schema_version() on the live server to detect drift.
+    SCHEMA_VERSION = "1.0.0"
+
+    @property
+    def schema_version(self) -> str:
+        return self.SCHEMA_VERSION
+
+    def server_schema_version(self) -> dict[str, Any]:
+        """Fetch the OpenAPI schema version Erebus is currently serving."""
+        return self.get("/api/schema/version")
+
+    def check_schema_compat(self) -> str:
+        """
+        Returns one of: 'match', 'server-newer', 'sdk-newer', 'major-mismatch'.
+        """
+        server = self.server_schema_version()
+        sa, sb, sc = [int(x) for x in server["version"].split(".")]
+        ka, kb, kc = [int(x) for x in self.SCHEMA_VERSION.split(".")]
+        if sa != ka:
+            return "major-mismatch"
+        if (sb, sc) > (kb, kc):
+            return "server-newer"
+        if (sb, sc) < (kb, kc):
+            return "sdk-newer"
+        return "match"
+
     # --- Agents ---
 
     def agent_chat(self, agent: str, message: str, **kwargs: Any) -> dict[str, Any]:

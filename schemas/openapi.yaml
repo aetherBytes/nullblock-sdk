@@ -1,0 +1,409 @@
+openapi: 3.1.0
+info:
+  title: NullBlock Public API
+  description: |
+    The public, agent-friendly surface of NullBlock. Single source of truth
+    for the contract between [nullblock-sdk](https://github.com/aetherBytes/nullblock-sdk)
+    and the Erebus router.
+
+    **Versioning rule (non-negotiable)**: every change to this file MUST bump
+    `info.version` per semver:
+      - **major** — removed endpoints, removed/renamed fields, type changes
+      - **minor** — new endpoints, new optional fields
+      - **patch** — documentation, examples, descriptions
+
+    The live server's served schema MUST match the version of the deployed SDK
+    they're meant to coexist with. Clients can verify via `GET /api/schema/version`.
+
+    The full operational rule lives in the main repo's `CLAUDE.md` under
+    "Public Surface Contract".
+  version: 1.0.0
+  license:
+    name: MIT
+    url: https://github.com/aetherBytes/nullblock-sdk/blob/main/LICENSE
+  contact:
+    name: NullBlock
+    url: https://nullblock.io
+
+servers:
+  - url: http://localhost:3000
+    description: Local development (default Erebus port)
+  - url: https://erebus.nullblock.io
+    description: Production (hosted Erebus)
+
+tags:
+  - name: meta
+    description: Server metadata — health, info, schema, friendly LLM index
+  - name: skills
+    description: First-party agentskills.io skills (CORS-open, no auth)
+
+paths:
+  /health:
+    get:
+      tags: [meta]
+      summary: Liveness check
+      operationId: getHealth
+      responses:
+        '200':
+          description: Server is healthy
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthResponse'
+
+  /api/info:
+    get:
+      tags: [meta]
+      summary: Full route map + auth flow reference
+      description: |
+        Human- and agent-readable enumeration of every public API surface,
+        their auth requirements, and the sensitive-data flow. Always
+        current — generated from the live Erebus router.
+      operationId: getApiInfo
+      responses:
+        '200':
+          description: Full info document
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+
+  /llms.txt:
+    get:
+      tags: [meta]
+      summary: Friendly LLM-readable index
+      description: |
+        Plain-text index of the discoverable surface, formatted for LLMs
+        crawling the API. Conforms loosely to the emerging llms.txt convention.
+      operationId: getLlmsTxt
+      responses:
+        '200':
+          description: Index document
+          content:
+            text/plain:
+              schema:
+                type: string
+
+  /api/schema:
+    get:
+      tags: [meta]
+      summary: This OpenAPI specification (live)
+      description: |
+        Returns the OpenAPI 3.1 schema Erebus is serving against. Clients
+        can hash this and compare against their embedded copy to detect drift.
+      operationId: getSchema
+      responses:
+        '200':
+          description: OpenAPI YAML
+          content:
+            application/yaml:
+              schema:
+                type: string
+            text/yaml:
+              schema:
+                type: string
+
+  /api/schema/version:
+    get:
+      tags: [meta]
+      summary: Schema version (just the semver string + metadata)
+      description: |
+        Lightweight endpoint for SDKs to check version compatibility on
+        startup or before requests. Compare against the SDK's embedded
+        schema version; warn or refuse on mismatch.
+      operationId: getSchemaVersion
+      responses:
+        '200':
+          description: Schema version info
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SchemaVersion'
+
+  /api/skills:
+    get:
+      tags: [skills]
+      summary: List first-party NullBlock skills
+      description: |
+        Discovery endpoint for skills authored by NullBlock against the
+        [agentskills.io](https://agentskills.io) standard. Returns parsed
+        SKILL.md frontmatter and install hints for major agents.
+
+        CORS-open, no auth required.
+      operationId: listSkills
+      responses:
+        '200':
+          description: Skill index
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SkillsListResponse'
+
+  /api/skills/{name}:
+    get:
+      tags: [skills]
+      summary: Full manifest for one skill
+      description: |
+        Frontmatter, complete file list, body size, and install hints for
+        a single skill. The file list can be used to fetch each bundled
+        resource individually via `/api/skills/{name}/{path}`.
+      operationId: getSkill
+      parameters:
+        - $ref: '#/components/parameters/SkillName'
+      responses:
+        '200':
+          description: Skill manifest
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SkillManifest'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /api/skills/{name}/SKILL.md:
+    get:
+      tags: [skills]
+      summary: Raw SKILL.md content
+      description: |
+        Returns the raw markdown so a consuming agent can write it
+        directly to its skills directory. Frontmatter is preserved exactly
+        as authored.
+      operationId: getSkillMd
+      parameters:
+        - $ref: '#/components/parameters/SkillName'
+      responses:
+        '200':
+          description: SKILL.md content
+          content:
+            text/markdown:
+              schema:
+                type: string
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /api/skills/{name}/{path}:
+    get:
+      tags: [skills]
+      summary: Bundled file from a skill folder
+      description: |
+        Fetches files like `references/foo.md`, `scripts/probe.sh`, or
+        `assets/template.json`. Path traversal (`..`) and absolute paths
+        are rejected with 400.
+
+        Content-type is inferred by extension; binary files come back as
+        `application/octet-stream`.
+      operationId: getSkillFile
+      parameters:
+        - $ref: '#/components/parameters/SkillName'
+        - name: path
+          in: path
+          required: true
+          description: Relative path inside the skill folder
+          schema:
+            type: string
+            pattern: ^[A-Za-z0-9._/-]+$
+            maxLength: 256
+      responses:
+        '200':
+          description: File content
+          content:
+            text/markdown:
+              schema:
+                type: string
+            text/x-shellscript:
+              schema:
+                type: string
+            text/x-python:
+              schema:
+                type: string
+            application/javascript:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: object
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '403':
+          description: Path escapes the skill root (e.g. `../etc/passwd`)
+          content:
+            text/plain:
+              schema:
+                type: string
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+components:
+  parameters:
+    SkillName:
+      name: name
+      in: path
+      required: true
+      description: |
+        Skill directory name. Must match the `name` field in the skill's
+        SKILL.md frontmatter (agentskills.io rule).
+      schema:
+        type: string
+        minLength: 1
+        maxLength: 64
+        pattern: ^[a-z0-9]([a-z0-9]|-(?!-))*[a-z0-9]$|^[a-z0-9]$
+
+  responses:
+    BadRequest:
+      description: Invalid input (malformed name, unsafe path, etc.)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+        text/plain:
+          schema:
+            type: string
+    NotFound:
+      description: Skill or file not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+        text/plain:
+          schema:
+            type: string
+
+  schemas:
+    HealthResponse:
+      type: object
+      additionalProperties: true
+      properties:
+        status:
+          type: string
+          example: healthy
+        version:
+          type: string
+          description: Erebus version
+          example: 0.1.0
+        uptime:
+          type: integer
+          description: Process uptime in seconds
+      required: [status]
+
+    SchemaVersion:
+      type: object
+      properties:
+        version:
+          type: string
+          description: Semver of the served OpenAPI schema
+          example: "1.0.0"
+        title:
+          type: string
+          example: NullBlock Public API
+        openapi:
+          type: string
+          example: "3.1.0"
+      required: [version]
+
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Machine-readable error code
+          example: skill_not_found
+        message:
+          type: string
+          description: Human-readable detail
+        name:
+          type: string
+          description: Echo of the offending input, when relevant
+      required: [error]
+
+    SkillFrontmatterMetadata:
+      type: object
+      description: |
+        Free-form metadata authored in the skill's SKILL.md frontmatter.
+        Conventional keys include `author`, `version`, `homepage`, `source_repo`.
+      additionalProperties:
+        type: string
+
+    SkillInstallHint:
+      type: object
+      description: |
+        Pre-baked install snippets for major agents + canonical fetch URLs.
+        Keys include `claude_code`, `openclaw`, `raw_skill_md`,
+        `github_skill_md`, `github_dir`, `spec`, `note`.
+      additionalProperties:
+        type: string
+
+    SkillSummary:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 64
+          pattern: ^[a-z0-9]([a-z0-9]|-(?!-))*[a-z0-9]$|^[a-z0-9]$
+          description: Skill identifier (matches the folder name)
+          example: null-audit
+        description:
+          type: string
+          minLength: 1
+          maxLength: 1024
+          description: One-sentence summary used for progressive-disclosure matching
+        license:
+          type: string
+          nullable: true
+        compatibility:
+          type: string
+          maxLength: 500
+          nullable: true
+        metadata:
+          $ref: '#/components/schemas/SkillFrontmatterMetadata'
+          nullable: true
+        skill_md_url:
+          type: string
+          description: Server-relative URL for the raw SKILL.md
+          example: /api/skills/null-audit/SKILL.md
+        install_hint:
+          $ref: '#/components/schemas/SkillInstallHint'
+      required: [name, description, skill_md_url, install_hint]
+
+    SkillManifest:
+      allOf:
+        - $ref: '#/components/schemas/SkillSummary'
+        - type: object
+          properties:
+            files:
+              type: array
+              description: All files in the skill folder, relative to root
+              items:
+                type: string
+              example: ["SKILL.md", "references/audit-engram-schema.md"]
+            body_chars:
+              type: integer
+              description: Length of the SKILL.md body (after frontmatter)
+              minimum: 0
+          required: [files, body_chars]
+
+    SkillsListResponse:
+      type: object
+      properties:
+        spec:
+          type: string
+          enum: ["agentskills.io"]
+        registry:
+          type: string
+          description: Identifier of which registry this list comes from
+          example: nullblock-first-party
+        count:
+          type: integer
+          minimum: 0
+        skills:
+          type: array
+          items:
+            $ref: '#/components/schemas/SkillSummary'
+      required: [spec, registry, count, skills]

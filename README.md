@@ -14,6 +14,8 @@
 
 This repo contains:
 
+- **`schemas/`** — OpenAPI 3.1 wire contract. Single source of truth.
+  Versioned per semver. Mirrored from the (private) main repo.
 - **`typescript/`** — `@nullblock/sdk` for browsers + Node
 - **`python/`** — `nullblock-sdk` for Python 3.10+
 - **`skills/`** — portable [agentskills.io](https://agentskills.io) skills
@@ -140,6 +142,44 @@ curl https://erebus.nullblock.io/api/skills/null-audit/references/probe-stdio-mc
 ```
 
 All skill endpoints are CORS-open. No auth required.
+
+## Wire contract — `schemas/openapi.yaml`
+
+The SDK and Erebus share one source of truth: the OpenAPI 3.1 spec in
+[`schemas/openapi.yaml`](./schemas/openapi.yaml). It's versioned per
+semver and served live by Erebus at `/api/schema`.
+
+### Drift check
+
+```typescript
+const nb = new NullblockClient({ baseUrl: 'https://erebus.nullblock.io' });
+
+// What this SDK was built against:
+console.log(nb.schemaVersion);                  // "1.0.0"
+
+// What the server is currently serving:
+console.log(await nb.serverSchemaVersion());    // { version: "1.0.0", ... }
+
+// One-shot compatibility check:
+const compat = await nb.checkSchemaCompat();
+// 'match' | 'server-newer' | 'sdk-newer' | 'major-mismatch'
+```
+
+Treat `major-mismatch` as a hard stop. Treat `sdk-newer` as a warning
+(you may be calling features the server doesn't have yet). Treat
+`server-newer` as fine to proceed — additive changes are backward-compat.
+
+### Versioning rule
+
+Mirrors the main repo's `CLAUDE.md` "Public Surface Contract":
+
+| Bump | When |
+|------|------|
+| **major** | Breaking — removed endpoints, removed fields, type changes |
+| **minor** | Additive — new endpoints, new optional fields |
+| **patch** | Documentation only |
+
+See [`schemas/README.md`](./schemas/README.md) for the full rule + coverage matrix.
 
 ## API surface (via Erebus, port 3000)
 

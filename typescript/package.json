@@ -1,7 +1,7 @@
 {
   "name": "@nullblock/sdk",
-  "version": "0.2.0",
-  "description": "TypeScript SDK for NullBlock — agents, engrams, MCP tools, Crossroads, and agentskills.io skills",
+  "version": "0.2.1",
+  "description": "TypeScript SDK for NullBlock — agents, engrams, MCP tools, Crossroads, agentskills.io skills, and an OpenAPI 3.1 wire contract",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "type": "module",
