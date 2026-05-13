@@ -1,9 +1,16 @@
 [project]
 name = "nullblock-sdk"
-version = "0.1.0"
-description = "Python SDK for NullBlock — agents, engrams, MCP tools, and Crossroads"
+version = "0.2.0"
+description = "Python SDK for NullBlock — agents, engrams, MCP tools, Crossroads, and agentskills.io skills"
 requires-python = ">=3.10"
 dependencies = ["httpx>=0.27"]
+license = { text = "MIT" }
+keywords = ["nullblock", "agents", "mcp", "engrams", "crossroads", "skills", "agentskills"]
+
+[project.urls]
+Homepage = "https://aetherbytes.github.io/nullblock-sdk/"
+Repository = "https://github.com/aetherBytes/nullblock-sdk"
+Issues = "https://github.com/aetherBytes/nullblock-sdk/issues"
 
 [build-system]
 requires = ["hatchling"]

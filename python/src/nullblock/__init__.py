@@ -6,6 +6,8 @@ from nullblock.types import (
     EngramCreateRequest,
     MCPToolInfo,
     MarketplaceListing,
+    SkillManifest,
+    SkillSummary,
     Task,
     User,
 )
@@ -19,6 +21,8 @@ __all__ = [
     "EngramCreateRequest",
     "MCPToolInfo",
     "MarketplaceListing",
+    "SkillManifest",
+    "SkillSummary",
     "Task",
     "User",
 ]

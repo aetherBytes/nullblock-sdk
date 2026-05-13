@@ -1,15 +1,25 @@
 {
   "name": "@nullblock/sdk",
-  "version": "0.1.0",
-  "description": "TypeScript SDK for NullBlock — agents, engrams, MCP tools, and Crossroads",
+  "version": "0.2.0",
+  "description": "TypeScript SDK for NullBlock — agents, engrams, MCP tools, Crossroads, and agentskills.io skills",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "type": "module",
   "scripts": {
     "build": "tsc",
     "dev": "tsc --watch"
   },
-  "keywords": ["nullblock", "agents", "mcp", "engrams", "crossroads", "solana"],
+  "keywords": ["nullblock", "agents", "mcp", "engrams", "crossroads", "skills", "agentskills", "anthropic"],
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aetherBytes/nullblock-sdk.git",
+    "directory": "typescript"
+  },
+  "homepage": "https://aetherbytes.github.io/nullblock-sdk/",
+  "bugs": {
+    "url": "https://github.com/aetherBytes/nullblock-sdk/issues"
+  },
   "devDependencies": {
     "typescript": "^5.3.0"
   }

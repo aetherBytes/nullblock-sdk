@@ -74,3 +74,22 @@ class User:
     wallet_address: str
     username: str | None = None
     created_at: str = ""
+
+
+@dataclass
+class SkillSummary:
+    """Frontmatter + install hints from `GET /api/skills`."""
+    name: str
+    description: str
+    skill_md_url: str
+    license: str | None = None
+    compatibility: str | None = None
+    metadata: dict[str, str] | None = None
+    install_hint: dict[str, str] = field(default_factory=dict)
+
+
+@dataclass
+class SkillManifest(SkillSummary):
+    """Full manifest from `GET /api/skills/:name`."""
+    files: list[str] = field(default_factory=list)
+    body_chars: int = 0

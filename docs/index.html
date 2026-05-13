@@ -95,6 +95,95 @@
             color: var(--fg-muted);
         }
 
+        .sdk {
+            margin-top: 4rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .sdk h2 {
+            font-size: 1.25rem;
+            color: var(--fg);
+            margin-bottom: 1rem;
+            letter-spacing: 0.05em;
+        }
+
+        .sdk p {
+            font-size: 1rem;
+            line-height: 1.7;
+            margin-bottom: 1rem;
+            color: var(--fg-muted);
+        }
+
+        .sdk .layers {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        @media (max-width: 768px) {
+            .sdk .layers {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .sdk .layer {
+            background: rgba(99, 102, 241, 0.05);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 1rem;
+        }
+
+        .sdk .layer h3 {
+            font-size: 0.9rem;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 0.5rem;
+        }
+
+        .sdk .layer p {
+            font-size: 0.9rem;
+            line-height: 1.5;
+            margin: 0;
+            color: var(--fg);
+        }
+
+        .sdk .links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin-top: 1.5rem;
+        }
+
+        .sdk .links a {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            background: rgba(99, 102, 241, 0.1);
+            border: 1px solid var(--primary);
+            border-radius: 4px;
+            color: var(--primary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+            transition: all 0.2s ease;
+        }
+
+        .sdk .links a:hover {
+            background: rgba(99, 102, 241, 0.2);
+            color: var(--fg);
+        }
+
+        .sdk code {
+            font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+            background: rgba(99, 102, 241, 0.1);
+            padding: 0.1rem 0.4rem;
+            border-radius: 3px;
+            font-size: 0.85em;
+            color: var(--fg);
+        }
+
         .footer {
             margin-top: 4rem;
             padding-top: 2rem;
@@ -149,8 +238,41 @@
             <p class="signature">— NullBlock, 2025</p>
         </div>
 
+        <div class="sdk">
+            <h2>SDK · v0.2.0</h2>
+            <p>The public, agent-friendly surface of NullBlock. Three layers, cleanly separated:</p>
+
+            <div class="layers">
+                <div class="layer">
+                    <h3>Distribution</h3>
+                    <p>Portable <code>SKILL.md</code> folders any agent can drop in. <a href="https://agentskills.io" style="color: var(--secondary)">agentskills.io</a> spec.</p>
+                </div>
+                <div class="layer">
+                    <h3>Capability</h3>
+                    <p>Callable MCP tools — <code>null_audit</code>, <code>create_engram</code>, … <a href="https://spec.modelcontextprotocol.io" style="color: var(--secondary)">MCP 2025-11-25</a>.</p>
+                </div>
+                <div class="layer">
+                    <h3>Consumer</h3>
+                    <p>Any agent — Hex, <code>nb</code>, Claude Code, Cursor, Goose, OpenClaw.</p>
+                </div>
+            </div>
+
+            <p style="margin-top: 1.5rem;">
+                <strong style="color: var(--fg);">Currently published:</strong>
+                <code>null-audit</code> — three-stage security audit for MCP tools. Drop into any agentskills.io-compatible client; it just works.
+            </p>
+
+            <div class="links">
+                <a href="https://github.com/aetherBytes/nullblock-sdk">github →</a>
+                <a href="https://github.com/aetherBytes/nullblock-sdk/tree/main/skills">skills/ →</a>
+                <a href="https://github.com/aetherBytes/nullblock-sdk/tree/main/typescript">@nullblock/sdk (TS) →</a>
+                <a href="https://github.com/aetherBytes/nullblock-sdk/tree/main/python">nullblock-sdk (Python) →</a>
+                <a href="https://github.com/aetherBytes/nullblock-sdk/blob/main/CHANGELOG.md">changelog →</a>
+            </div>
+        </div>
+
         <div class="footer">
-            <p><a href="https://nullblock.io">NullBlock.io</a> · <a href="https://x.com/Nullblock_io">@Nullblock_io</a></p>
+            <p><a href="https://nullblock.io">NullBlock.io</a> · <a href="https://x.com/Nullblock_io">@Nullblock_io</a> · <a href="https://github.com/aetherBytes/nullblock-sdk">github</a></p>
         </div>
     </div>
 

@@ -1,0 +1,9 @@
+typescript/node_modules/
+typescript/dist/
+python/__pycache__/
+python/src/nullblock/__pycache__/
+python/.venv/
+python/build/
+python/dist/
+*.egg-info/
+.DS_Store

@@ -3,6 +3,7 @@ export { AgentsClient } from './agents.js';
 export { EngramsClient } from './engrams.js';
 export { MCPClient } from './mcp.js';
 export { MarketplaceClient } from './marketplace.js';
+export { SkillsClient } from './skills.js';
 export { WalletsClient } from './wallets.js';
 
 export type {
@@ -30,4 +31,7 @@ export type {
   LLMCompletionRequest,
   LLMCompletionResponse,
   DiscoveryResult,
+  SkillSummary,
+  SkillManifest,
+  SkillsListResponse,
 } from './types.js';

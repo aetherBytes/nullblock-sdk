@@ -121,6 +121,39 @@ class NullblockClient:
     def discover_all(self) -> dict[str, Any]:
         return self.get("/api/discovery/all")
 
+    # --- Skills (agentskills.io) ---
+
+    def list_skills(self) -> dict[str, Any]:
+        """List all first-party NullBlock skills with parsed frontmatter."""
+        return self.get("/api/skills")
+
+    def get_skill(self, name: str) -> dict[str, Any]:
+        """Full manifest for one skill: frontmatter, file list, install hints."""
+        return self.get(f"/api/skills/{name}")
+
+    def get_skill_md(self, name: str) -> str:
+        """Raw SKILL.md content as a string."""
+        res = self._http.get(f"/api/skills/{name}/SKILL.md", headers=self._headers())
+        if res.status_code >= 400:
+            raise NullblockError(res.status_code, res.text, f"/api/skills/{name}/SKILL.md")
+        return res.text
+
+    def get_skill_file(self, name: str, path: str) -> str:
+        """Raw bundled file (e.g. references/foo.md, scripts/probe.sh)."""
+        url = f"/api/skills/{name}/{path}"
+        res = self._http.get(url, headers=self._headers())
+        if res.status_code >= 400:
+            raise NullblockError(res.status_code, res.text, url)
+        return res.text
+
+    def fetch_skill_bundle(self, name: str) -> dict[str, str]:
+        """Fetch SKILL.md + every bundled file. Returns a dict of relative-path -> content."""
+        manifest = self.get_skill(name)
+        out: dict[str, str] = {}
+        for file in manifest.get("files", []):
+            out[file] = self.get_skill_file(name, file)
+        return out
+
     def close(self) -> None:
         self._http.close()
 

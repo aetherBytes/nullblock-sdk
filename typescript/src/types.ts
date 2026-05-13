@@ -175,3 +175,33 @@ export interface DiscoveryResult {
   agents: AgentStatus[];
   protocols: Array<{ name: string; url: string }>;
 }
+
+// ---------- Skills (agentskills.io) ----------
+
+/** Frontmatter parsed from a SKILL.md plus install hints. */
+export interface SkillSummary {
+  name: string;
+  description: string;
+  license?: string;
+  compatibility?: string;
+  metadata?: Record<string, string>;
+  /** Erebus-relative path to fetch the raw SKILL.md. */
+  skill_md_url: string;
+  /** Install commands for major agents (Claude Code, OpenClaw) + canonical URLs. */
+  install_hint: Record<string, string>;
+}
+
+/** Full manifest returned by `GET /api/skills/:name`. */
+export interface SkillManifest extends SkillSummary {
+  /** All files in the skill folder, relative to the skill root. */
+  files: string[];
+  body_chars: number;
+}
+
+/** Response shape of `GET /api/skills`. */
+export interface SkillsListResponse {
+  spec: 'agentskills.io';
+  registry: string;
+  count: number;
+  skills: SkillSummary[];
+}

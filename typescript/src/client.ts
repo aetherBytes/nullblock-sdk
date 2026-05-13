@@ -3,6 +3,7 @@ import { AgentsClient } from './agents.js';
 import { EngramsClient } from './engrams.js';
 import { MCPClient } from './mcp.js';
 import { MarketplaceClient } from './marketplace.js';
+import { SkillsClient } from './skills.js';
 import { WalletsClient } from './wallets.js';
 
 const DEFAULT_BASE_URL = 'http://localhost:3000';
@@ -18,6 +19,7 @@ export class NullblockClient {
   readonly engrams: EngramsClient;
   readonly mcp: MCPClient;
   readonly marketplace: MarketplaceClient;
+  readonly skills: SkillsClient;
   readonly wallets: WalletsClient;
 
   constructor(config: Partial<NullblockConfig> = {}) {
@@ -30,6 +32,7 @@ export class NullblockClient {
     this.engrams = new EngramsClient(this);
     this.mcp = new MCPClient(this);
     this.marketplace = new MarketplaceClient(this);
+    this.skills = new SkillsClient(this);
     this.wallets = new WalletsClient(this);
   }
 
